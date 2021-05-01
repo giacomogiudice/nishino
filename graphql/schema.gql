@@ -1,0 +1,43 @@
+type Paper {
+    id: String! @unique
+    year: Int!
+    published: Time!
+    title: String!
+    authors: [String!]!
+    summary: String
+    url: String
+    pdf: String
+}
+
+input PaperInput {
+  id: String!
+  year: Int!
+  published: Time!
+  title: String!
+  authors: [String!]!
+  summary: String
+  url: String
+  pdf: String
+}
+
+type Build {
+  time: Time!
+  info: String
+}
+
+type Query {
+    allPapers: [Paper!]!
+    paperById(id: String!): Paper!
+    papersByYear(year: Int!): [Paper!]!
+    missingIdsFromArray(ids: [String]): [String] @resolver
+
+    allBuilds: [Build!]!
+    lastBuildTimestamp: Time @resolver
+}
+
+type Mutation {
+    createPapersFromArray(data: [PaperInput]): [Paper] @resolver
+
+    createBuild : Build! @resolver
+}
+

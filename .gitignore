@@ -1,0 +1,14 @@
+# Dependency directories
+node_modules/
+
+# Distribution directory
+dist/*
+
+# Local Netlify folder
+.netlify
+
+# Local notes
+untracked
+
+# Mac files
+.DS_Store
