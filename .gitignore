@@ -1,3 +1,4 @@
+
 # Dependency directories
 node_modules/
 
@@ -12,3 +13,6 @@ untracked
 
 # Mac files
 .DS_Store
+
+# Gitkeep
+!**/.gitkeep
