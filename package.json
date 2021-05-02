@@ -4,7 +4,6 @@
   "description": "A better browser for Nishino's DMRG preprints",
   "main": "index.js",
   "scripts": {
-    "prebuild": "node graphql/seed.js",
     "build": "",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
