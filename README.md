@@ -2,109 +2,78 @@
 
 ## FaunaDB Setup
 In order to test the database locally, we use the `netlify dev` command from ![Netlify CLI](https://cli.netlify.com/).
-To automagically add the FaunaDB authentication secret, run the following commands
-```
+To automagically add a FaunaDB database to the repository, run the following commands
+```bash
+netlify link
 netlify addons:create fauna
 netlify addons:auth fauna
 ```
 
-If the database is empty, start by uploading the `schema.gql` file.
-Two main types are defined: `Paper` and `Build.`
+Next head over to https://dashboard.fauna.com and start by uploading the `schema.gql` file.
+There is a single `Paper` type defined, which contains information about a single paper.
+Now we need to define some custom function attached to the GraphQL queries.
 
-### Papers
-The `Paper` contains information about a single paper.
-
-In order to filter using the `id` of each `Paper`, we define a new index `CreateIndex` from the Shell
-```js
-CreateIndex({
-  name: "allPapersById",
-  source: Collection("Paper"),
-  values: [{ field: ["data", "id"] }, { field: ["ref"] }]
-})
-```
-
-Now, to get the missing `id`s from an array of `id`s, we define the function `missingIdsFromArray`
+To get the missing `id`s from an array of `id`s, we define the function `missingIdsFromArray`
 ```js
 Query(
   Lambda(
     ["array"],
     Filter(
       Var("array"),
-      Lambda(
-        "elem",
-        IsEmpty(
-          Filter(
-            Match(Index("allPapersById")),
-            Lambda(["id", "ref"], Equals(Var("elem"), Var("id")))
-          )
-        )
-      )
+      Lambda("elem", IsEmpty(Match(Index("paperById"), Var("elem"))))
     )
   )
 )
 ```
-Finally, to create a batch of `Paper`s, we define a User-defined function (UDF) called `createPapersFromArray`
+
+In order to get papers of a certain year ordered by publication date, we define a new index
+```js
+CreateIndex({
+  name: "papersByYearAndPublished",
+  source: Collection("Paper"),
+  terms: { field: ["data", "year"] },
+  values: [
+    { field: ["data", "published"], reverse: true },
+    { field: ["ref"]}
+  ]
+})
+```
+and a new function `papersByYear`, which paginates the papers of each year from the most recent to oldest one.
+```js
+Query(
+  Lambda(
+    ["year", "size", "after", "before"],
+    Let(
+      {
+        match: Match(Index("papersByYearAndPublished"), Var("year")),
+        page: If(
+          IsNull(Var("before")),
+          If(
+            IsNull(Var("after")),
+            Paginate(Var("match"), { size: Var("size") }),
+            Paginate(Var("match"), { after: Var("after"), size: Var("size") })
+          ),
+          Paginate(Var("match"), { before: Var("before"), size: Var("size") })
+        )
+      },
+      Map(Var("page"), Lambda(["date", "ref"], Get(Var("ref"))))
+    )
+  )
+)
+```
+
+Finally, to create a batch of `Paper`s, we define a function called `createPapersFromArray`
 ```js
 Query(
   Lambda(
     ["array"],
-    Map(
-      Var("array"),
-      Lambda("elem", Do(Create(Collection("Paper"), { data: Var("elem") })))
+    Do(
+      Map(
+        Var("array"),
+        Lambda("elem", Do(Create(Collection("Paper"), { data: Var("elem") })))
+      ),
+      true
     )
-  )
-)
-```
-
-### Builds
-To keep track of when a database build happened, we use a `Build` entry.
-To retrieve them by time, let us define a new index `buildsByTimestamp` using the Shell
-```js
-CreateIndex({
-  name: "buildsByTimestamp",
-  source: Collection("Build"),
-  values: [{ field: ["ts"], reverse: true }, { field: ["data", "time"] }]
-})
-```
-
-To create a build without having to give the time, we define a function `createBuild`
-```js
-Query(Lambda("_", Do(Create(Collection("Build"), { data: { time: Now() } }))))
-```
-
-To retrieve the latest timestamp, we define a function `lastBuildTimestamp`
-```js
-Query(
-  Lambda(
-    "_",
-    Let(
-      {
-        arr: Select(
-          "data",
-          Map(
-            Paginate(Match(Index("buildsByTimestamp")), {size: 1}),
-            Lambda(["tf", "time"], Var("time"))
-          )
-        )
-      },
-      If(IsNonEmpty(Var("arr")), Select(0, Var("arr")), null)
-    )
-  )
-)
-```
-
-Now timestamps should be easy to create and retrieve.
-
-### Nuke everything
-```
-Map(
-  Paginate(
-    Documents(Collection('Paper')),
-    { size: 9999 }
-  ),
-  Lambda(
-    ['ref'],
-    Delete(Var('ref'))
   )
 )
 ```

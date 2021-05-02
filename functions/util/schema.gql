@@ -1,7 +1,7 @@
 type Paper {
     id: String! @unique
-    year: Int!
     published: Time!
+    year: Int!
     title: String!
     authors: [String!]!
     summary: String
@@ -11,8 +11,8 @@ type Paper {
 
 input PaperInput {
   id: String!
-  year: Int!
   published: Time!
+  year: Int!
   title: String!
   authors: [String!]!
   summary: String
@@ -20,24 +20,15 @@ input PaperInput {
   pdf: String
 }
 
-type Build {
-  time: Time!
-  info: String
-}
 
 type Query {
     allPapers: [Paper!]!
     paperById(id: String!): Paper!
-    papersByYear(year: Int!): [Paper!]!
+    papersByYear(year: Int!): [Paper!]! @resolver(paginated: true)
     missingIdsFromArray(ids: [String]): [String] @resolver
-
-    allBuilds: [Build!]!
-    lastBuildTimestamp: Time @resolver
 }
 
 type Mutation {
-    createPapersFromArray(data: [PaperInput]): [Paper] @resolver
-
-    createBuild : Build! @resolver
+    createPapersFromArray(data: [PaperInput]): Boolean @resolver
 }
 

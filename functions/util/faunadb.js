@@ -2,36 +2,9 @@ const fetch = require("node-fetch");
 const { chunk } = require("../../util/array");
 
 
-const FAUNADB_URL = "https://graphql.fauna.com/graphql";
-
-const LAST_BUILD_TIMESTAMP = `
-  query {
-    lastBuildTimestamp
-  }
-`;
-
-const getLastBuildTimestamp = async () => {
-  const output = await query(LAST_BUILD_TIMESTAMP);
-  return new Date(validate(output, "lastBuildTimestamp"));
-}
-
-const CREATE_BUILD = `
-  mutation {
-    createBuild {
-      time
-    }
-  }
-`;
-
-const setBuildTimestamp = async () => {
-  const output = await query(CREATE_BUILD);
-  return validate(output, "createBuild");
-}
-
-
 const GET_PAPERS_BY_YEAR = `
-  query($year: Int!) {
-    papersByYear(year: $year, _size: 2000) {
+  query($year: Int!, $size: Int = 2000, $cursor: String) {
+    papersByYear(year: $year, _size: $size, _cursor: $cursor) {
       data {
         id
         year
@@ -57,7 +30,7 @@ const MISSING_IDS_FROM_ARRAY = `
   }
 `;
 
-const MISSING_IDS_BATCH_SIZE = 64;
+const MISSING_IDS_BATCH_SIZE = 128;
 
 const getMissingIdsFromArray = async (ids) => {
   const promises = chunk(ids, MISSING_IDS_BATCH_SIZE)
@@ -86,9 +59,7 @@ const createPaper = async (data) => {
 
 const CREATE_PAPERS_FROM_ARRAY = `
   mutation($arr: [PaperInput]) {
-    createPapersFromArray(data: $arr) {
-      id
-    }
+    createPapersFromArray(data: $arr)
   }
 `;
 
@@ -98,12 +69,12 @@ const createPapersFromArray = async (arr) => {
   const promises = chunk(arr, CREATE_PAPERS_BATCH_SIZE)
     .map((batch) => query(CREATE_PAPERS_FROM_ARRAY, {arr: batch})
   );
-
-  const results = await Promise.allSettled(promises);
-  return results.map(
-    (output) => validate(output, "createPapersFromArray")
-  ).flat(1);
+  // Possible bug in FaunaDB: Playground returns data, but here it returns a status
+  const fulfilled = output => "status" in output && output.status === "fulfilled";
+  return (await Promise.allSettled(promises)).every(fulfilled);
 };
+
+const FAUNADB_URL = "https://graphql.fauna.com/graphql";
 
 const query = async (_query, _variables) => {
   const response = await fetch(FAUNADB_URL, {
@@ -128,7 +99,7 @@ const validate = (output, name) => {
   const { data, errors } = output;
   if (errors) {
     throw new Error(`GraphQL failed with the following message\n ${JSON.stringify(errors, null, 2)}`);
-  } else if(data === null || !(name in data)) {
+  } else if(!data || !(name in data)) {
     throw new Error(`GraphQL data does not contain expected field\n ${JSON.stringify(output, null, 2)}`);
   } else {
     return data[name];
@@ -137,9 +108,7 @@ const validate = (output, name) => {
 
 module.exports = { 
   query,
-  getLastBuildTimestamp,
   getPapersByYear,
-  setBuildTimestamp,
   getMissingIdsFromArray,
   createPaper,
   createPapersFromArray

@@ -1,6 +1,6 @@
 [build]
     functions = "functions"
-    command = "npm run build"
+    command = ""
 
 [[redirects]]
    from = "/api/*"

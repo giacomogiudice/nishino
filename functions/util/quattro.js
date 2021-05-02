@@ -4,7 +4,6 @@ const cheerio = require("cheerio");
 
 const QUATTRO_URL = "http://quattro.phys.sci.kobe-u.ac.jp";
 
-
 const resolveUrl = (year) => {
   const currentYear = new Date().getFullYear();
   const suffix = (isNaN(year) || year >= currentYear) ? "" : year.toString().substr(-2);
