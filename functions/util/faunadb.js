@@ -1,9 +1,9 @@
-const fetch = require("node-fetch");
-const { chunk } = require("../../util/array");
-
+import fetch from "node-fetch";
+import cheerio from "cheerio";
+import { chunk } from "../../lib/array";
 
 const GET_PAPERS_BY_YEAR = `
-  query($year: Int!, $size: Int = 2000, $cursor: String) {
+  query($year: Int!, $size: Int = 50, $cursor: String) {
     papersByYear(year: $year, _size: $size, _cursor: $cursor) {
       data {
         id
@@ -12,14 +12,17 @@ const GET_PAPERS_BY_YEAR = `
         title
         authors
         summary
+        categories
         url
         pdf
+        journal_ref
+        doi
       }
     }
   }
 `;
 
-const getPapersByYear = async (data) => {
+export const getPapersByYear = async (data) => {
   const output = await query(GET_PAPERS_BY_YEAR, data);
   return validate(output, "papersByYear");
 }
@@ -32,9 +35,9 @@ const MISSING_IDS_FROM_ARRAY = `
 
 const MISSING_IDS_BATCH_SIZE = 128;
 
-const getMissingIdsFromArray = async (ids) => {
+export const getMissingIdsFromArray = async (ids) => {
   const promises = chunk(ids, MISSING_IDS_BATCH_SIZE)
-    .map((batch) => query(MISSING_IDS_FROM_ARRAY, {arr: batch})
+    .map((batch) => query(MISSING_IDS_FROM_ARRAY, { arr: batch })
   );
   
   const results = await Promise.all(promises);
@@ -51,9 +54,9 @@ const CREATE_PAPER = `
   }
 `;
 
-const createPaper = async (data) => {
+export const createPaper = async (data) => {
   console.log(data);
-  const output =  await query(CREATE_PAPER, {data: data});
+  const output =  await query(CREATE_PAPER, { data });
   return validate(output, "createPaper");
 };
 
@@ -65,9 +68,9 @@ const CREATE_PAPERS_FROM_ARRAY = `
 
 const CREATE_PAPERS_BATCH_SIZE = 256
 
-const createPapersFromArray = async (arr) => {
+export const createPapersFromArray = async (arr) => {
   const promises = chunk(arr, CREATE_PAPERS_BATCH_SIZE)
-    .map((batch) => query(CREATE_PAPERS_FROM_ARRAY, {arr: batch})
+    .map((batch) => query(CREATE_PAPERS_FROM_ARRAY, { arr: batch })
   );
   // Possible bug in FaunaDB: Playground returns data, but here it returns a status
   const fulfilled = output => "status" in output && output.status === "fulfilled";
@@ -76,7 +79,7 @@ const createPapersFromArray = async (arr) => {
 
 const FAUNADB_URL = "https://graphql.fauna.com/graphql";
 
-const query = async (_query, _variables) => {
+export const query = async (_query, _variables) => {
   const response = await fetch(FAUNADB_URL, {
     method: "POST",
     headers: {
@@ -104,12 +107,4 @@ const validate = (output, name) => {
   } else {
     return data[name];
   }
-}
-
-module.exports = { 
-  query,
-  getPapersByYear,
-  getMissingIdsFromArray,
-  createPaper,
-  createPapersFromArray
 };

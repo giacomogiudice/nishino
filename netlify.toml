@@ -1,6 +1,12 @@
+[functions]
+    directory = "functions"
+    node_bundler = "esbuild"
+
 [build]
-    functions = "functions"
-    command = "npm run build"
+    publish = "static"
+    
+[dev]
+    autoLaunch = false
 
 [[redirects]]
    from = "/api/*"

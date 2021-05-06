@@ -1,37 +1,15 @@
-const faunadb = require("./util/faunadb");
-const quattro = require("./util/quattro");
-const arxiv = require("./util/arxiv");
-const { unique, difference } = require("../util/array");
+import * as faunadb from "./util/faunadb";
+import * as quattro from "./util/quattro";
+import * as arxiv from "./util/arxiv";
+import { unique, difference } from "../lib/array";
 
-
-const handler = async (event, context, callback) => {
-  let { year = "", validate = "false" } = event.queryStringParameters;
-  year = (year) ? parseInt(year) : undefined;
-  validate = (validate === "true");
-
-  const data = await query({year: year, validate: validate}).catch((err) => {
-    console.error(err);
-    return {
-      statusCode: 500,
-      body: err
-    };
-  });
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(data, null, 2)
-  };
-};
-
-const query = async (options) => {
+export const query = async (options) => {
   const firstYear = 1994;
   const currentYear = new Date().getFullYear();
 
   let {year = currentYear, validate = true} = options;
 
-  if (year < firstYear || year > currentYear) {
-    throw new Error("Requested year is not available.")
-  }
+  if (year < firstYear || year > currentYear) throw new Error("Requested year is not available.")
 
   let stored, remote;
   let tic, toc;
@@ -69,10 +47,30 @@ const query = async (options) => {
 
     stored.data = [...stored.data,...missing];
   } else {
-    stored = await faunadb.getPapersByYear({year: year});
+    stored = await faunadb.getPapersByYear({ year });
   }
 
   return stored;
 };
 
-module.exports = { default: query, handler };
+export const handler = async (event, context, callback) => {
+  let { year = "", validate = "false" } = event.queryStringParameters;
+  year = (year) ? parseInt(year) : undefined;
+  validate = (validate === "true");
+
+  const data = await query({ year, validate }).catch((err) => {
+    console.error(err);
+    return {
+      statusCode: 500,
+      body: err
+    };
+  });
+
+  return {
+    statusCode: 200,
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data, null, 2)
+  };
+};
+
+export default query;

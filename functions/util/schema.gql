@@ -5,8 +5,11 @@ type Paper {
     title: String!
     authors: [String!]!
     summary: String
+    categories: [String]
     url: String
     pdf: String
+    journal_ref: String
+    doi: String
 }
 
 input PaperInput {
@@ -16,8 +19,11 @@ input PaperInput {
   title: String!
   authors: [String!]!
   summary: String
+  categories: [String]
   url: String
   pdf: String
+  journal_ref: String
+  doi: String
 }
 
 
