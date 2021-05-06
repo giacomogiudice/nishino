@@ -39,7 +39,7 @@ export const query = async (options) => {
     toc = Date.now();
     console.log(`Retrieved information for ${missing.length} new papers for year ${year} in ${toc - tic} ms.`);
 
-    // Add them to the database
+    Add them to the database
     tic = Date.now();
     const complete = await faunadb.createPapersFromArray(missing);
     toc = Date.now();

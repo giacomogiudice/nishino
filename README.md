@@ -77,3 +77,18 @@ Query(
   )
 )
 ```
+
+Optionally, we may want to create a function to delete the stored `Papers`.
+```js
+Query(
+  Lambda(
+    "_",
+    Map(
+      Paginate(Documents(Collection("Paper")), { size: 9999 }),
+      Lambda(["ref"], Delete(Var("ref")))
+    )
+  )
+)
+```
+which we can call from the shell as `Call(Function("reset"))`.
+Notice that you amy need to call it a couple times if you have 10000 entries or more.

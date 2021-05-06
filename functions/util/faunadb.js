@@ -33,7 +33,7 @@ const MISSING_IDS_FROM_ARRAY = `
   }
 `;
 
-const MISSING_IDS_BATCH_SIZE = 128;
+const MISSING_IDS_BATCH_SIZE = 512;
 
 export const getMissingIdsFromArray = async (ids) => {
   const promises = chunk(ids, MISSING_IDS_BATCH_SIZE)
@@ -66,7 +66,7 @@ const CREATE_PAPERS_FROM_ARRAY = `
   }
 `;
 
-const CREATE_PAPERS_BATCH_SIZE = 256
+const CREATE_PAPERS_BATCH_SIZE = 256;
 
 export const createPapersFromArray = async (arr) => {
   const promises = chunk(arr, CREATE_PAPERS_BATCH_SIZE)

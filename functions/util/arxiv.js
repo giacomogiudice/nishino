@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import cheerio from "cheerio";
+import { replaceLatexAccents } from "../../lib/string";
 
 const ARXIV_URL = "http://export.arxiv.org";
 const RESULT_LIMIT = 2000;
@@ -19,6 +20,8 @@ export const getPapersByIdArray = async (arr) => {
     throw new Error(`Bad response from ${pageUrl}\n ${JSON.stringify(response, null, 2)}`);
   }
 
+  const whitespaces = /\s+/g;
+  
   // Extract meaningful tags
   const body = await response.text();
   const $ = cheerio.load(body, { xmlMode: true });
@@ -26,11 +29,11 @@ export const getPapersByIdArray = async (arr) => {
     const id = arr[ind];
     const published = $(elem).children("published").text();
     const year = (new Date(published)).getFullYear();
-    const title = $(elem).children("title").text();
+    const title = $(elem).children("title").text().replace(whitespaces, " ").trim();
     const authors = $(elem).children("author").map((_, author) => (
       $(author).children("name").text()
     )).get();
-    const summary = $(elem).children("summary").text().trim().replace(/[\n\r]/g, " ");
+    const summary = replaceLatexAccents($(elem).children("summary").text().replace(whitespaces, " ").trim());
     const categories = $(elem).children("category").map((_, cat) => $(cat).attr("term")).get();
     const url = $(elem).children("id").text();
     const pdf = $(elem).children("link[title=pdf]").attr("href");
