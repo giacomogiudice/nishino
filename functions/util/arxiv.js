@@ -39,7 +39,7 @@ export const getPapersByIdArray = async (arr) => {
     const pdf = $(elem).children("link[title=pdf]").attr("href");
     const journal_ref = $(elem).children("arxiv\\:journal_ref").text();
     const doi = $(elem).children("arxiv\\:doi").text();
-    
+
     return {
       id,
       year,

@@ -4,7 +4,10 @@
   "description": "A better browser for Nishino's DMRG preprints",
   "main": "index.js",
   "scripts": {
-    "build": "",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "netlify": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Giacomo Giudice",
@@ -12,7 +15,13 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.6",
     "html-entities": "^2.3.2",
-    "netlify-cli": "^3.24.3",
+    "katex": "^0.13.6",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "netlify-cli": "^3.24.3",
+    "sass": "^1.32.12",
+    "vite": "^2.2.4",
+    "vite-plugin-handlebars": "^1.5.1"
   }
 }
