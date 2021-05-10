@@ -3,7 +3,7 @@ import cheerio from "cheerio";
 import { chunk } from "../../lib/array";
 
 const GET_PAPERS_BY_YEAR = `
-  query($year: Int!, $size: Int = 50, $cursor: String) {
+  query($year: Int!, $size: Int, $cursor: String) {
     papersByYear(year: $year, _size: $size, _cursor: $cursor) {
       data {
         id
@@ -18,11 +18,14 @@ const GET_PAPERS_BY_YEAR = `
         journal_ref
         doi
       }
+      before
+      after
     }
   }
 `;
 
 export const getPapersByYear = async (data) => {
+  console.log(data);
   const output = await query(GET_PAPERS_BY_YEAR, data);
   return validate(output, "papersByYear");
 }

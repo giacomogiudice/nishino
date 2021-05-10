@@ -3,11 +3,23 @@ import * as quattro from "./util/quattro";
 import * as arxiv from "./util/arxiv";
 import { unique, difference } from "../lib/array";
 
+const parser = (input, defaults) => {
+  output = input;
+  for (let key in defaults) {
+    output[key] = output[key] ? defaults[key].constructor(output[key]) : defaults[key]; 
+  }
+  return output;
+}
+
 export const query = async (options) => {
   const firstYear = 1994;
   const currentYear = new Date().getFullYear();
 
-  let {year = currentYear, validate = true} = options;
+  const { year, validate , size , cursor } = parser(options, {
+    year: currentYear,
+    validate: false,
+    size: 50
+  });
 
   if (year < firstYear || year > currentYear) throw new Error("Requested year is not available.")
 
@@ -20,7 +32,7 @@ export const query = async (options) => {
     tic = Date.now();
     const promises = [
       quattro.getPageDataByYear(year),
-      faunadb.getPapersByYear({year: year})
+      faunadb.getPapersByYear({ year, validate, size, cursor })
     ];
     [remote, stored] = await Promise.all(promises);
 
@@ -47,18 +59,16 @@ export const query = async (options) => {
 
     stored.data = [...stored.data,...missing];
   } else {
-    stored = await faunadb.getPapersByYear({ year });
+    stored = await faunadb.getPapersByYear({ year, validate, size, cursor });
   }
 
   return stored;
 };
 
 export const handler = async (event, context, callback) => {
-  let { year = "", validate = "false" } = event.queryStringParameters;
-  year = (year) ? parseInt(year) : undefined;
-  validate = (validate === "true");
+  let params = event.queryStringParameters;
 
-  const data = await query({ year, validate }).catch((err) => {
+  const data = await query(params).catch((err) => {
     console.error(err);
     return {
       statusCode: 500,
@@ -68,7 +78,7 @@ export const handler = async (event, context, callback) => {
 
   return {
     statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data, null, 2)
   };
 };
