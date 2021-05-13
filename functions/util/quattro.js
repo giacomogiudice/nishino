@@ -12,6 +12,12 @@ const resolveUrl = (year) => {
 };
 
 export const getPageDataByYear = async (year) => {
+  const firstYear = 1994;
+  const currentYear = new Date().getFullYear();
+  if (year < firstYear || year > currentYear) {
+    console.warn(`Requested year ${year} is not available from ${QUATTRO_URL}`);
+    return { timestamp: null, data: [] };
+  }
   const pageUrl = resolveUrl(year);
 
   // Fetch text

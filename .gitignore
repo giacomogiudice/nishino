@@ -1,18 +1,7 @@
-
-# Dependency directories
-node_modules/
-
-# Distribution directory
-dist/*
-
-# Local Netlify folder
+node_modules
+dist
 .netlify
-
-# Local notes
 untracked
-
-# Mac files
 .DS_Store
 
-# Gitkeep
 !**/.gitkeep

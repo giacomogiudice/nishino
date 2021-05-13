@@ -6,22 +6,32 @@ import { unique, difference } from "../lib/array";
 const parser = (input, defaults) => {
   output = input;
   for (let key in defaults) {
-    output[key] = output[key] ? defaults[key].constructor(output[key]) : defaults[key]; 
+    if (key in output) {
+      switch (typeof defaults[key]) {
+        case "string":
+          output[key] = String(output[key]);
+          break;
+        case "number":
+          output[key] = Number(output[key]);
+          break;
+        case "boolean":
+          output[key] = output[key] === "true";
+          break;
+      }
+    } else {
+      output[key] = defaults[key];
+    }
   }
   return output;
-}
+};
 
 export const query = async (options) => {
-  const firstYear = 1994;
   const currentYear = new Date().getFullYear();
-
   const { year, validate , size , cursor } = parser(options, {
     year: currentYear,
     validate: false,
-    size: 50
+    size: 25
   });
-
-  if (year < firstYear || year > currentYear) throw new Error("Requested year is not available.")
 
   let stored, remote;
   let tic, toc;

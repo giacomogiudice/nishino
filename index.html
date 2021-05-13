@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <include src="src/includes/meta.html">{"title": "Home"}</include>
+    <script type="module">
+      import "@/style/main.scss";
+
+      import App from "@/components/App.svelte";
+
+      const app = new App({
+          target: document.querySelector("#app")
+        });
+
+      export default app;
+    </script>
+  </head>
+  <body>
+    <include src="src/includes/header.html"></include>
+    <main>
+      <div class="container" id="app">
+        <noscript>
+          <h2 style="text-align: center">This content is only available with Javascript</h2>
+        </noscript>
+      </div>
+    </main>
+    <include src="src/includes/footer.html"></include>
+  </body>
+</html>
