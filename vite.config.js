@@ -5,6 +5,7 @@ import posthtml from "./plugins/vite-plugin-posthtml";
 import include from "posthtml-include";
 
 export default {
+  publicDir: "static",
   build: {
     rollupOptions: {
       input: ["index.html", "about/index.html"],
