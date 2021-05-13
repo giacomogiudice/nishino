@@ -1,13 +1,11 @@
 {
   "name": "nishino",
   "version": "1.0.0",
-  "description": "A better browser for Nishino's DMRG preprints",
-  "main": "index.js",
+  "description": "A small reader for Tomotoshi Nishino's selection of papers on tensor networks",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "netlify": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Giacomo Giudice",
@@ -17,15 +15,15 @@
     "glob": "^7.1.7",
     "html-entities": "^2.3.2",
     "katex": "^0.13.6",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "svelte": "^3.38.2"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.9",
-    "netlify-cli": "^3.24.3",
     "posthtml": "^0.15.2",
     "posthtml-include": "^1.7.1",
     "sass": "^1.32.12",
     "svelte-preprocess": "^4.7.3",
-    "vite": "^2.2.4"
+    "vite": "^2.3.2"
   }
 }
