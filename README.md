@@ -20,6 +20,7 @@ For a seemingly simple task, there are remarkably many parts that come together.
 * 📦 [Vite](https://vitejs.dev/) for bundling and frontend dev environment  
 * ✏️ HTML templates with [PostHTML](https://github.com/posthtml/)
 * 🎲 Interactive components with [Svelte](https://svelte.dev/)
+* 🎓 Fast LaTeX rendering with [Katex](https://katex.org/)
 
 The database is used to store all the papers from the original website, so it doesn't have to be queried every time some content is requested.
 Each entry in the database corresponds uniquely to a paper, and contains information about the paper such as the title, authors, abstract, etc (see below).
