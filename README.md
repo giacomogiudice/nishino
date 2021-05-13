@@ -1,6 +1,61 @@
-# Nishino
+# DMRG Preprints
+
+A small reader for Tomotoshi Nishino's selection of papers on tensor networks.
+
+Check out the [website](https://nishino.netlify.app/).
+
+## Abstract
+Papers on tensor networks appear every day, but it is hard to keep track of them, since they span a vast number of [arXiv](http://arxiv.org) categories.
+For almost 30 years, professor Tomotoshi Nishino has been keeping track of papers related to tensor networks appearing on arXiv, and posting them on his [website](http://quattro.phys.sci.kobe-u.ac.jp/dmrg/condmat.html).
+
+I wanted to make a simple reader for his website, which would include additional features like the abstract, a direct link to the PDF, and an arguably prettier formatting.
+The reader needs to be always up-to-date, as fast as possible, and minimalistic.
+
+## Tech
+
+For a seemingly simple task, there are remarkably many parts that come together.
+
+* 💾 [FaunaDB](https://fauna.com/) database
+* 🤖 API using [Netlify functions](https://www.netlify.com/products/functions/)
+* 📦 [Vite](https://vitejs.dev/) for bundling and frontend dev environment  
+* ✏️ HTML templates with [PostHTML](https://github.com/posthtml/)
+* 🎲 Interactive components with [Svelte](https://svelte.dev/)
+
+The database is used to store all the papers from the original website, so it doesn't have to be queried every time some content is requested.
+Each entry in the database corresponds uniquely to a paper, and contains information about the paper such as the title, authors, abstract, etc (see below).
+
+The API hosted on Netlify responds to requests of the form
+```
+https://nishino.netlify.app/api/query?
+```
+with query parameters `year`, `validate`, `size` and `cursor`.
+
+If `validate` is `true`, the API will request the original website for the specified `year`, extract the `arxiv.org` links, and check if they are present in the database.
+If not, it requests the information of the missing papers from the [arXiv API](http://arxiv.org/help/api/), and send them to the database.
+The parameters `size` and `cursor` are used for pagination. 
+
+The frontend components are written with Svelte.
+It seemed to me the best choice, since it aimed at being a lightweight and fast reactive framework.
+It's fairly concise but doesn't bring in too much framework bloat. 
+
+I wanted all non-interactive components (i.e. HTML partials) to be included at build time, so I'm using the [posthtml-include](https://github.com/posthtml/posthtml-include) plugin. 
+It could be removed if the project moves to some framework like SvelteKit.
+
+Finally, Vite is an amazing bundler and comes with a great dev server.
+It's a bit too opinionated on where the `index.html` files should be, so while a better solution awaits, there is an `about` folder floating around for the `/about/` route.
+Unfortunately, it's not static enough to go in the `public` folder.
+
+## Todo
+
+Here is a list of improvement
+* Infinite scroll.
+* Add a marker for Prof. Nishino's RGB rating.
+* Pre-render certain pages on the server or at build time. As long as the site is not very popular it makes no sense to pre-fetch the content of the landing page, but previous years can be optimized.
+* Try SvelteKit. It seems promising since it offers out-of-the-box SSR and integration with Netlify.
+* Information like the journal ref. and the DOI are not updated.
 
 ## FaunaDB Setup
+
 In order to test the database locally, we use the `netlify dev` command from ![Netlify CLI](https://cli.netlify.com/).
 To automagically add a FaunaDB database to the repository, run the following commands
 ```bash
