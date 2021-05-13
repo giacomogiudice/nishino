@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <include src="src/includes/meta.html">{"title": "About"}</include>
+    <script type="module">
+      import "@/style/main.scss";
+    </script>
+  </head>
+  <body>
+    <include src="src/includes/header.html"></include>
+    <main>
+      <div class="container">
+        <h1>About</h1>
+        <p>
+          For almost 30 years, professor <a href="http://quattro.phys.sci.kobe-u.ac.jp/nishino_e.html">Tomotoshi Nishino</a> has been keeping track of papers related to tensor networks appearing on <a href="http://arxiv.org/">arxiv.org</a>.
+        </p>
+        <blockquote cite="http://quattro.phys.sci.kobe-u.ac.jp/dmrg/admin.html">
+          <p>
+            Every morning (or evening), he accesses arXiv.org, and search key word such as DMRG, Renormalization, Entropy, Fidelity, Density, etc. from the abstract. After finding out preprints in this way, he reads tytle of most of the preprint listed in arXive again from the top to the bottom, or sometimes looks at authors. Articles detected in this primitive way is listed during the day.
+          </p>
+        </blockquote>
+        <p>
+          This website collects the list of papers from the <a href="http://quattro.phys.sci.kobe-u.ac.jp/dmrg/condmat.html">website</a> and renders in an arguably improved format.
+          Additional information, such as the abstract and the direct link to the PDF are obtained from the <a href="http://arxiv.org/help/api/">arXiv API</a>.
+          If you are interested in the tech involved in building the website, or want to suggest improvements, head over to <a href="http://github.com/giacomogiudice/nishino">GitHub</a>.
+        </p>
+      </div>
+    </main>
+    <include src="src/includes/footer.html"></include>
+  </body>
+</html>

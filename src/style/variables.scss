@@ -1,0 +1,77 @@
+// Font stacks
+$font-stack--default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$font-stack--header: Avenir, Helvetica Neue, Helvetica, sans-serif;
+$font-stack--content: $font-stack--default;
+
+// Color schemes
+$color--primary: #16A085;
+$color--secondary: #3E6889;
+$color--tertiary: #E3C076;
+$color--background: #fffffe;
+$color--background-darker: #f9f9f9;
+$color--background-highlight: #e1e1e1;
+$color--text: #2c3e50;
+$color--text-lighter: #627071;
+$color--accent: #0D6E5C; /* Unused */
+
+// Spacing
+$width--container: 960px;
+$spacing--xxs: 0.125rem;
+$spacing--xs: 0.25rem;
+$spacing--sm: 0.5rem;
+$spacing--md: 1rem;
+$spacing--lg: 1.5rem;
+$spacing--xl: 2rem;
+$spacing--xxl: 3rem;
+
+$border-width--sm: 1px;
+$border-width--md: 2.5px;
+$border-width--lg: 5px;
+
+$border-radius--sm: 2.5px;
+$border-radius--md: 5px;
+$border-radius--lg: 10px;
+
+$shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+
+@mixin text--xxl {
+  font-size: 1.875rem;
+  line-height: 2rem;
+}
+
+@mixin text--xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+@mixin text--lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+@mixin text--md {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+@mixin text--sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@mixin text--xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+// Breakpoints
+$breakpoint--sm: 442px;
+$breakpoint--md: 768px;
+$breakpoint--lg: 1024px;
+
+@mixin below($bp) {
+  @media only screen and (max-width: $bp) {
+    @content;
+  }
+}
+

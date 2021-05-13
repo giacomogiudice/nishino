@@ -1,0 +1,57 @@
+{
+  "data": [
+    {
+      "id": "0000.0000",
+      "year": 2010,
+      "published": "2000-12-31T12:00:00Z",
+      "title": "This is a mockup",
+      "authors": [
+        "F. D. C. Willard"
+      ],
+      "summary": "Here we can test some LaTeX rendering like $c = \\sqrt{a^2 + b^2}$. Authors also use commands like {\\it italics} or \\emph{strong} which don't get rendered yet.",
+      "categories": [
+        "quant-ph"
+      ],
+      "url": "https://arxiv.org/",
+      "pdf": "https://arxiv.org/about",
+      "journal_ref": "",
+      "doi": ""
+    },
+    {
+      "id": "1012.1136",
+      "year": 2010,
+      "published": "2010-12-06T11:36:25Z",
+      "title": "Microscopic versus macroscopic approaches to non-equilibrium systems",
+      "authors": [
+        "Bernard Derrida"
+      ],
+      "summary": "The one dimensional symmetric simple exclusion process (SSEP) is one of the very few exactly soluble models of non-equilibrium statistical physics. It describes a system of particles which diffuse with hard core repulsion on a one dimensional lattice in contact with two reservoirs of particles at unequal densities. The goal of this note is to review the two main approaches which lead to the exact expression of the large deviation functional of the density of the SSEP in its steady state: a microscopic approach (based on the matrix product ansatz and an additivity property) and a macroscopic approach (based on the macroscopic fluctuation theory of Bertini, De Sole, Gabrielli, Jona-Lasinio and Landim).",
+      "categories": [
+        "cond-mat.stat-mech"
+      ],
+      "url": "http://arxiv.org/abs/1012.1136v1",
+      "pdf": "http://arxiv.org/pdf/1012.1136v1",
+      "journal_ref": "",
+      "doi": "10.1088/1742-5468/2011/01/P01030"
+    },
+    {
+      "id": "1008.3477",
+      "year": 2010,
+      "published": "2010-08-20T11:49:19Z",
+      "title": "The density-matrix renormalization group in the age of matrix product states",
+      "authors": [
+        "Ulrich Schollwoeck"
+      ],
+      "summary": "The density-matrix renormalization group method (DMRG) has established itself over the last decade as the leading method for the simulation of the statics and dynamics of one-dimensional strongly correlated quantum lattice systems. In the further development of the method, the realization that DMRG operates on a highly interesting class of quantum states, so-called matrix product states (MPS), has allowed a much deeper understanding of the inner structure of the DMRG method, its further potential and its limitations. In this paper, I want to give a detailed exposition of current DMRG thinking in the MPS language in order to make the advisable implementation of the family of DMRG algorithms in exclusively MPS terms transparent. I then move on to discuss some directions of potentially fruitful further algorithmic development: while DMRG is a very mature method by now, I still see potential for further improvements, as exemplified by a number of recently introduced algorithms.",
+      "categories": [
+        "cond-mat.str-el"
+      ],
+      "url": "http://arxiv.org/abs/1008.3477v2",
+      "pdf": "http://arxiv.org/pdf/1008.3477v2",
+      "journal_ref": "Annals of Physics 326, 96 (2011)",
+      "doi": "10.1016/j.aop.2010.09.012"
+    }
+  ],
+  "before": null,
+  "after": null
+}
