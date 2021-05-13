@@ -30,7 +30,7 @@ export const query = async (options) => {
   const { year, validate , size , cursor } = parser(options, {
     year: currentYear,
     validate: false,
-    size: 25
+    size: 10
   });
 
   let stored, remote;
