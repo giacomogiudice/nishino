@@ -25,7 +25,6 @@ const GET_PAPERS_BY_YEAR = `
 `;
 
 export const getPapersByYear = async (data) => {
-  console.log(data);
   const output = await query(GET_PAPERS_BY_YEAR, data);
   return validate(output, "papersByYear");
 }

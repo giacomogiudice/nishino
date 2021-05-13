@@ -26,7 +26,7 @@
   @import "../style/variables.scss";
 
   li {
-    padding: $spacing--sm;
+    padding: $spacing--sm 0;
   }
 
   li:nth-child(even) {
