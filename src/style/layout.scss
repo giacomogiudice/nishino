@@ -1,7 +1,6 @@
 body {
   font-family: $font-stack--content;
-  font-size: 1rem;
-  line-height: 1.5rem;
+  @include text--md;
   color: $color--text;
   background-color: $color--background;
 }
@@ -17,7 +16,7 @@ main, header, footer {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: $font-stack--header;
-  font-weight: 200;
+  font-weight: $font-weight--header;
   color: $color--secondary;
   margin: $spacing--sm;
 
@@ -67,7 +66,7 @@ a {
     text-decoration-thickness: 2px;
   }
 
-  .inverted &:hover {
+  .inverted &:hover, .inverted &:focus {
     color: inherit;
   }
 }
@@ -92,7 +91,7 @@ a[role=button] {
     color: $color--background;
   }
 
-  .inverted &:hover {
+  .inverted &:hover, .inverted &:focus {
     color: $color--primary;
     background-color: $color--background;
   }
@@ -163,5 +162,10 @@ footer {
     justify-content: space-evenly;
     margin-top: $spacing--sm;
     margin-bottom: $spacing--sm;
+  }
+
+  a {
+    font-family: $font-stack--header;
+    font-weight: $font-weight--header;
   }
 }
