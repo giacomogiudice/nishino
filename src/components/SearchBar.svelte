@@ -1,9 +1,9 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from "svelte";
 
   export let items = [];
   export let selected = undefined;
-  export let text = (selected)? selected.label : "";
+  export let text = selected ? selected.label : "";
   export let placeholder = "Search";
   export let open = false;
 
@@ -12,7 +12,7 @@
 
   const dispatch = createEventDispatcher();
 
-  $: filteredItems = (text !== "")? items.filter(({ _, label }) => label.includes(text)) : items;
+  $: filteredItems = text !== "" ? items.filter(({ label }) => label.includes(text)) : items;
 
   const expand = () => {
     open = true;
@@ -63,7 +63,7 @@
         break;
       case "ArrowDown":
         event.preventDefault();
-        if (highlighted < (filteredItems.length-1)) {
+        if (highlighted < filteredItems.length - 1) {
           highlighted++;
           scrollDownTo(highlighted);
         }
@@ -83,38 +83,36 @@
     if (!item) return;
     const offset = list.getBoundingClientRect().bottom - item.getBoundingClientRect().bottom;
     if (offset < 0) list.scrollTop -= offset;
-  }
+  };
 
   const scrollUpTo = (index) => {
     const item = list.querySelectorAll(".item")[index];
     if (!item) return;
     const offset = list.getBoundingClientRect().top - item.getBoundingClientRect().top;
     if (offset > 0) list.scrollTop -= offset;
-  }
+  };
 </script>
 
 <form role="search" class="searchbar">
-  <div class="shadow" class:open on:click={collapse}></div>
+  <div class="shadow" class:open on:click={collapse} />
   <input
     type="text"
-    placeholder={placeholder}
+    {placeholder}
     autocomplete="off"
     bind:this={input}
     bind:value={text}
     on:keydown={handleKeyDown}
-    on:focus={expand}
-  />
+    on:focus={expand} />
   <div bind:this={list} class="list" class:open>
     <ul>
       {#each filteredItems as { value, label }, ind}
         <li
           class="item"
-          class:selected={(selected)? selected.value === value : false}
+          class:selected={selected ? selected.value === value : false}
           class:highlighted={ind === highlighted}
           data-index={ind}
           on:click={handleClick}
-          on:mouseenter={handleMouseEnter}
-        >
+          on:mouseenter={handleMouseEnter}>
           {label}
         </li>
       {:else}
@@ -132,7 +130,7 @@
     width: 8ch;
     margin: $spacing--sm;
   }
-  
+
   input {
     box-sizing: border-box;
     cursor: text;
@@ -145,8 +143,9 @@
     @include text--md;
     z-index: 4;
     text-align: center;
-    
-    &:hover, &:active {
+
+    &:hover,
+    &:active {
       color: $color--text;
     }
 
@@ -170,13 +169,13 @@
     position: absolute;
     margin-top: $spacing--sm;
     width: 100%;
-    max-height: 5*3rem;
+    max-height: 5 * 3rem;
     overflow-y: scroll;
     background-color: $color--background;
     z-index: 4;
     border-radius: $border-radius--md;
     box-shadow: $shadow;
-    
+
     &.open {
       display: inherit;
     }
@@ -200,7 +199,7 @@
     &:not(:last-child) {
       border-bottom: 1px solid $color--background-highlight;
     }
-    
+
     &.highlighted {
       cursor: pointer;
       background-color: $color--background-highlight;

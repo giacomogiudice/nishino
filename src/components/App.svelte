@@ -7,7 +7,7 @@
   const firstYear = 1994;
   const lastYear = new Date().getFullYear();
 
-  const itemize = n => ({ value: n, label: n.toString() });
+  const itemize = (n) => ({ value: n, label: n.toString() });
   const items = range(firstYear, lastYear).reverse().map(itemize);
 
   const reset = (_year) => ({
@@ -21,15 +21,15 @@
   let state = reset();
 
   // Dependent variables
-  $: ({year, papers, cursor, bottomed} = state);
+  $: ({ year, papers, cursor, bottomed } = state);
   $: document.title = `${year} | DMRG Preprints`;
   let loading = true;
 
-  const init = () => {  
-    // Check if url is of the form /year/:year  
+  const init = () => {
+    // Check if url is of the form /year/:year
     const url = new URL(document.location);
     const match = url.pathname.match(/\/year\/(\d+)/);
-    const _year = (match)? parseInt(match[1]) : lastYear;
+    const _year = match ? parseInt(match[1]) : lastYear;
     // TODO 404
     state = reset(_year);
     update().then();
@@ -38,14 +38,14 @@
   const update = async () => {
     // We use state variables to not have to tick()
     if (state.bottomed) return;
-    // Call API 
+    // Call API
     loading = true;
     let url = `/api/query?year=${state.year}`;
     if (state.year === lastYear) url += `&validate=true`;
     if (state.cursor) url += `&cursor=${state.cursor}`;
     const res = await fetch(url);
     loading = false;
-    
+
     if (!res.ok) {
       throw new Error(`Could not load ${url}`);
     }
@@ -55,7 +55,7 @@
     // Set bottomed flag to true if we reached the end
     if (!state.cursor && state.papers) state.bottomed = true;
     // Commit new state to history API
-    history.replaceState(state , null, `/year/${state.year}`);
+    history.replaceState(state, null, `/year/${state.year}`);
   };
 
   const handlePop = (event) => {
@@ -79,28 +79,28 @@
     // Reset state
     state = reset(event.detail.value);
     // "Move" to a new page
-    history.pushState(state , null, `/year/${year}`);
+    history.pushState(state, null, `/year/${year}`);
     update().then();
   };
 
   onMount(init);
 </script>
 
-<svelte:window on:popstate={handlePop}/>
+<svelte:window on:popstate={handlePop} />
 
 <nav>
-  <label class="label">View by year</label>
-  <SearchBar {items} on:select={handleSelect}></SearchBar>
+  <div class="label">View by year</div>
+  <SearchBar {items} on:select={handleSelect} />
 </nav>
 <section>
-  <PaperList {papers}></PaperList>
+  <PaperList {papers} />
   <div class="announcer">
     {#if loading}
-      <object type="image/svg+xml" data="/loading.svg"></object>
+      <object type="image/svg+xml" data="/loading.svg" name="loading" aria-label="loading" />
     {:else if !papers}
       <h2>No papers found</h2>
     {:else if !bottomed}
-      <a role="button" on:click={update}>More</a>
+      <a role="button" on:click={update} href={void 0}>More</a>
     {/if}
   </div>
 </section>
@@ -118,7 +118,7 @@
     margin: $spacing--sm;
     @include text--lg;
   }
-  
+
   .announcer {
     display: flex;
     align-items: center;

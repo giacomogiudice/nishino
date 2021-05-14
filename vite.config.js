@@ -8,7 +8,7 @@ export default {
   publicDir: "static",
   build: {
     rollupOptions: {
-      input: ["index.html", "about/index.html"],
+      input: ["index.html", "about/index.html"]
     }
   },
   plugins: [
@@ -17,7 +17,7 @@ export default {
     }),
     svelte({
       preprocess: preprocess()
-    }),
+    })
   ],
   resolve: {
     alias: {
@@ -30,7 +30,7 @@ export default {
     proxy: {
       "/api/query": {
         target: "http://localhost:3000/",
-        rewrite: path => "mock/proxy.json"
+        rewrite: () => "mock/proxy.json"
       }
     }
   }

@@ -10,11 +10,18 @@ body {
   color: $color--background;
 }
 
-main, header, footer {
+main,
+header,
+footer {
   width: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: $font-stack--header;
   font-weight: $font-weight--header;
   color: $color--secondary;
@@ -66,12 +73,13 @@ a {
     text-decoration-thickness: 2px;
   }
 
-  .inverted &:hover, .inverted &:focus {
+  .inverted &:hover,
+  .inverted &:focus {
     color: inherit;
   }
 }
 
-a[role=button] {
+a[role="button"] {
   display: inline-block;
   padding: $spacing--xs $spacing--sm;
   margin: $spacing--sm;
@@ -81,9 +89,10 @@ a[role=button] {
   text-decoration: none;
   transition: all 150ms linear;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: $color--background;
-    background-color: $color--secondary; 
+    background-color: $color--secondary;
   }
 
   .inverted & {
@@ -91,18 +100,20 @@ a[role=button] {
     color: $color--background;
   }
 
-  .inverted &:hover, .inverted &:focus {
+  .inverted &:hover,
+  .inverted &:focus {
     color: $color--primary;
     background-color: $color--background;
   }
 
-  &.disabled, &.disabled:hover, &.disabled:focus {
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:focus {
     color: $color--text-lighter;
     border-color: $color--text-lighter;
     background-color: $color--background;
   }
 }
-
 
 blockquote {
   padding: $spacing--sm $spacing--md;

@@ -4,9 +4,11 @@
   "description": "A small reader for Tomotoshi Nishino's selection of papers on tensor networks",
   "scripts": {
     "dev": "vite",
+    "prebuild": "npm run lint",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "prettier --check --plugin-search-dir=. --ignore-path .gitignore . && eslint --ignore-path .gitignore .",
+    "format": "prettier --write --plugin-search-dir=. --ignore-path .gitignore ."
   },
   "author": "Giacomo Giudice",
   "license": "MIT",
@@ -20,8 +22,13 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.9",
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-svelte3": "^3.2.0",
     "posthtml": "^0.15.2",
     "posthtml-include": "^1.7.1",
+    "prettier": "^2.3.0",
+    "prettier-plugin-svelte": "^2.3.0",
     "sass": "^1.32.12",
     "svelte-preprocess": "^4.7.3",
     "vite": "^2.3.2"

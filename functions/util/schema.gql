@@ -1,15 +1,15 @@
 type Paper {
-    id: String! @unique
-    published: Time!
-    year: Int!
-    title: String!
-    authors: [String!]!
-    summary: String
-    categories: [String]
-    url: String
-    pdf: String
-    journal_ref: String
-    doi: String
+  id: String! @unique
+  published: Time!
+  year: Int!
+  title: String!
+  authors: [String!]!
+  summary: String
+  categories: [String]
+  url: String
+  pdf: String
+  journal_ref: String
+  doi: String
 }
 
 input PaperInput {
@@ -26,15 +26,13 @@ input PaperInput {
   doi: String
 }
 
-
 type Query {
-    allPapers: [Paper!]!
-    paperById(id: String!): Paper!
-    papersByYear(year: Int!): [Paper!]! @resolver(paginated: true)
-    missingIdsFromArray(ids: [String]): [String] @resolver
+  allPapers: [Paper!]!
+  paperById(id: String!): Paper!
+  papersByYear(year: Int!): [Paper!]! @resolver(paginated: true)
+  missingIdsFromArray(ids: [String]): [String] @resolver
 }
 
 type Mutation {
-    createPapersFromArray(data: [PaperInput]): Boolean @resolver
+  createPapersFromArray(data: [PaperInput]): Boolean @resolver
 }
-

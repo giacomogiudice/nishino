@@ -1,5 +1,4 @@
 import fetch from "node-fetch";
-import cheerio from "cheerio";
 import { chunk } from "../../lib/array";
 
 const GET_PAPERS_BY_YEAR = `
@@ -27,7 +26,7 @@ const GET_PAPERS_BY_YEAR = `
 export const getPapersByYear = async (data) => {
   const output = await query(GET_PAPERS_BY_YEAR, data);
   return validate(output, "papersByYear");
-}
+};
 
 const MISSING_IDS_FROM_ARRAY = `
   query ($arr: [String]) {
@@ -38,14 +37,12 @@ const MISSING_IDS_FROM_ARRAY = `
 const MISSING_IDS_BATCH_SIZE = 512;
 
 export const getMissingIdsFromArray = async (ids) => {
-  const promises = chunk(ids, MISSING_IDS_BATCH_SIZE)
-    .map((batch) => query(MISSING_IDS_FROM_ARRAY, { arr: batch })
+  const promises = chunk(ids, MISSING_IDS_BATCH_SIZE).map((batch) =>
+    query(MISSING_IDS_FROM_ARRAY, { arr: batch })
   );
-  
+
   const results = await Promise.all(promises);
-  return results.map(
-    (output) => validate(output, "missingIdsFromArray")
-  ).flat(1);
+  return results.map((output) => validate(output, "missingIdsFromArray")).flat(1);
 };
 
 const CREATE_PAPER = `
@@ -58,7 +55,7 @@ const CREATE_PAPER = `
 
 export const createPaper = async (data) => {
   console.log(data);
-  const output =  await query(CREATE_PAPER, { data });
+  const output = await query(CREATE_PAPER, { data });
   return validate(output, "createPaper");
 };
 
@@ -71,11 +68,11 @@ const CREATE_PAPERS_FROM_ARRAY = `
 const CREATE_PAPERS_BATCH_SIZE = 256;
 
 export const createPapersFromArray = async (arr) => {
-  const promises = chunk(arr, CREATE_PAPERS_BATCH_SIZE)
-    .map((batch) => query(CREATE_PAPERS_FROM_ARRAY, { arr: batch })
+  const promises = chunk(arr, CREATE_PAPERS_BATCH_SIZE).map((batch) =>
+    query(CREATE_PAPERS_FROM_ARRAY, { arr: batch })
   );
   // Possible bug in FaunaDB: Playground returns data, but here it returns a status
-  const fulfilled = output => "status" in output && output.status === "fulfilled";
+  const fulfilled = (output) => "status" in output && output.status === "fulfilled";
   return (await Promise.allSettled(promises)).every(fulfilled);
 };
 
@@ -90,7 +87,7 @@ export const query = async (_query, _variables) => {
     body: JSON.stringify({
       query: _query,
       variables: _variables
-    }),
+    })
   });
 
   if (!response || !response.ok) {
@@ -103,9 +100,13 @@ export const query = async (_query, _variables) => {
 const validate = (output, name) => {
   const { data, errors } = output;
   if (errors) {
-    throw new Error(`GraphQL failed with the following message\n ${JSON.stringify(errors, null, 2)}`);
-  } else if(!data || !(name in data)) {
-    throw new Error(`GraphQL data does not contain expected field\n ${JSON.stringify(output, null, 2)}`);
+    throw new Error(
+      `GraphQL failed with the following message\n ${JSON.stringify(errors, null, 2)}`
+    );
+  } else if (!data || !(name in data)) {
+    throw new Error(
+      `GraphQL data does not contain expected field\n ${JSON.stringify(output, null, 2)}`
+    );
   } else {
     return data[name];
   }
