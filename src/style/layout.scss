@@ -116,7 +116,10 @@ a[role="button"] {
 }
 
 blockquote {
-  padding: $spacing--sm $spacing--md;
+  padding-top: $spacing--sm;
+  padding-bottom: $spacing--sm;
+  padding-left: $spacing--md;
+  padding-right: $spacing--sm;
   margin: $spacing--sm;
   border-left: $border-width--md solid $color--secondary;
   border-top-right-radius: $border-radius--sm;
@@ -128,26 +131,28 @@ blockquote {
 .container {
   max-width: $width--container;
   margin: 0 auto;
+}
 
+.wide-text {
   @include below($breakpoint--lg) {
     padding-left: $spacing--md;
     padding-right: $spacing--md;
   }
 }
 
-.icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
+.flex-even {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
-body {
+.body {
   display: flex;
   flex-direction: column;
   align-content: center;
 }
 
-header {
+.header {
   .container {
     display: flex;
     align-items: center;
@@ -165,20 +170,15 @@ header {
   }
 }
 
-main {
+.main {
   padding-top: $spacing--md;
-  padding-bottom: $spacing--md;
-  margin-bottom: auto;
+  padding-bottom: $spacing--lg;
 }
 
-footer {
-  .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    margin-top: $spacing--sm;
-    margin-bottom: $spacing--sm;
-  }
+.footer {
+  margin-top: auto;
+  padding-top: $spacing--md;
+  padding-bottom: $spacing--md;
 
   a {
     font-family: $font-stack--header;

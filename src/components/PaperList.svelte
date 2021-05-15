@@ -30,7 +30,7 @@
   @import "../style/variables.scss";
 
   li {
-    padding: $spacing--sm 0;
+    padding: $spacing--sm $spacing--md;
   }
 
   li:nth-child(even) {

@@ -139,6 +139,7 @@
     border: 2.5px solid $color--primary;
     border-radius: $border-radius--md;
     color: $color--text-lighter;
+    background-color: $color--background;
     outline: none;
     @include text--md;
     z-index: 4;
