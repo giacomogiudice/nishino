@@ -140,13 +140,17 @@ blockquote {
   }
 }
 
+.full-height {
+  height: 100vh;
+}
+
 .flex-even {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
 }
 
-.body {
+.flex-col {
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -159,6 +163,11 @@ blockquote {
     justify-content: space-between;
   }
 
+  .title {
+    @include below($breakpoint--lg) {
+      @include text--xl;
+    }
+  }
   .title a {
     text-decoration: inherit;
   }
@@ -173,15 +182,10 @@ blockquote {
 .main {
   padding-top: $spacing--md;
   padding-bottom: $spacing--lg;
+  height: 100%;
 }
 
-.footer {
-  margin-top: auto;
-  padding-top: $spacing--md;
-  padding-bottom: $spacing--md;
-
-  a {
-    font-family: $font-stack--header;
-    font-weight: $font-weight--header;
-  }
+#app {
+  overflow: hidden;
+  height: 100%;
 }

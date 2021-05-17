@@ -69,7 +69,7 @@ $shadow: 0 4px 8px 0px rgba(0, 0, 0, 0.1);
 // Breakpoints
 $breakpoint--sm: 442px;
 $breakpoint--md: 768px;
-$breakpoint--lg: 1024px;
+$breakpoint--lg: 960px;
 
 @mixin below($bp) {
   @media only screen and (max-width: $bp) {

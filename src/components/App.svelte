@@ -1,7 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import PaperList from "./PaperList.svelte";
+  import VirtualList from "./VirtualList.svelte";
   import SearchBar from "./SearchBar.svelte";
+  import Paper from "./Paper.svelte";
   import { range } from "$lib/array";
 
   const firstYear = 1994;
@@ -10,18 +11,15 @@
   const itemize = (n) => ({ value: n, label: n.toString() });
   const items = range(firstYear, lastYear).reverse().map(itemize);
 
-  const reset = (_year) => ({
-    year: _year,
-    papers: [],
-    cursor: undefined,
-    bottomed: false
-  });
+  // Page state variables
+  let year = undefined;
+  let papers = [];
 
-  // The source of truth (could potentially be a store)
-  let state = reset();
+  // Navbar state
+  let nav,
+    tucked = false;
+  let scrollTop = 0;
 
-  // Dependent variables
-  $: ({ year, papers, cursor, bottomed } = state);
   $: document.title = `${year} | DMRG Preprints`;
   let loading = true;
 
@@ -29,39 +27,37 @@
     // Check if url is of the form /year/:year
     const url = new URL(document.location);
     const match = url.pathname.match(/\/year\/(\d+)/);
-    const _year = match ? parseInt(match[1]) : lastYear;
+    year = match ? parseInt(match[1]) : lastYear;
     // TODO 404
-    state = reset(_year);
-    update().then();
+    update();
   };
 
   const update = async () => {
+    console.log("request");
     // We use state variables to not have to tick()
-    if (state.bottomed) return;
     // Call API
     loading = true;
-    let url = `/api/query?year=${state.year}`;
-    if (state.year === lastYear) url += `&validate=true`;
-    if (state.cursor) url += `&cursor=${state.cursor}`;
+    let url = `/api/query?year=${year}&size=2000`;
+    if (year === lastYear) url += `&validate=true`;
+
     const res = await fetch(url);
-    loading = false;
 
     if (!res.ok) {
+      loading = false;
       throw new Error(`Could not load ${url}`);
     }
-    const { data, after } = await res.json();
-    state.papers = data;
-    state.cursor = after;
-    // Set bottomed flag to true if we reached the end
-    if (!state.cursor && state.papers) state.bottomed = true;
+
+    const { data } = await res.json();
+    papers = data;
+    loading = false;
     // Commit new state to history API
-    history.replaceState(state, null, `/year/${state.year}`);
+    history.replaceState({ year, papers }, null, `/year/${year}`);
   };
 
   const handlePop = (event) => {
     if (event.state) {
       // Recycle the saved state
-      state = event.state;
+      ({ year, papers } = event.state);
     } else {
       // Current location.href is already correct
       init();
@@ -77,10 +73,25 @@
     // Skip if same year is selected
     if (event.detail.value === year) return;
     // Reset state
-    state = reset(event.detail.value);
+    year = event.detail.value;
+    papers = [];
     // "Move" to a new page
-    history.pushState(state, null, `/year/${year}`);
+    history.pushState({ year, papers }, null, `/year/${year}`);
     update().then();
+  };
+
+  const handleScroll = (event) => {
+    const newScrollTop = event.detail.scrollTop;
+    const delta = 30; // Minimum change to listen to
+    if (Math.abs(newScrollTop - scrollTop) < delta) return;
+    if (newScrollTop > scrollTop) {
+      // Scroll down event
+      tucked = true;
+    } else if (tucked) {
+      // Scroll up event
+      tucked = false;
+    }
+    scrollTop = newScrollTop;
   };
 
   onMount(init);
@@ -88,22 +99,23 @@
 
 <svelte:window on:popstate={handlePop} />
 
-<nav>
-  <div class="label">View by year</div>
-  <SearchBar {items} on:select={handleSelect} />
+<nav class="container" bind:this={nav} class:tucked style="--height: {nav?.offsetHeight}px">
+  <SearchBar {items} on:select={handleSelect} placeholder="Year" text={year} />
+  <a role="button" href="/about/">About</a>
 </nav>
-<section>
-  <PaperList {papers} />
-  <div class="announcer">
-    {#if loading}
-      <object type="image/svg+xml" data="/loading.svg" name="loading" aria-label="loading" />
-    {:else if !papers}
-      <h2>No papers found</h2>
-    {:else if !bottomed}
-      <a role="button" on:click={update} href={void 0}>More</a>
-    {/if}
+{#if loading}
+  <div class="container announcer flex-even">
+    <object type="image/svg+xml" data="/loading.svg" name="loading" aria-label="loading" />
   </div>
-</section>
+{:else if papers.length}
+  <VirtualList items={papers} let:item={paper} on:scroll={handleScroll}>
+    <Paper {...paper} />
+  </VirtualList>
+{:else}
+  <div class="container announcer flex-even">
+    <h2>No papers available</h2>
+  </div>
+{/if}
 
 <style type="scss">
   @import "../style/variables.scss";
@@ -111,20 +123,20 @@
   nav {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-  }
+    justify-content: space-between;
+    width: 100%;
+    transition: all 300ms ease-in-out;
+    border-bottom: 1px solid $color--background-highlight;
 
-  .label {
-    margin: $spacing--sm;
-    @include text--lg;
+    &.tucked {
+      margin-top: calc(-1 * var(--height, 0));
+    }
   }
 
   .announcer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: $spacing--lg 0;
-    min-height: 4rem;
-    min-width: 12rem;
+    margin-top: $spacing--lg;
+    margin-bottom: $spacing--lg;
+    min-height: $spacing--xxl;
+    min-width: 16ch;
   }
 </style>

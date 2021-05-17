@@ -14,15 +14,14 @@
       export default app;
     </script>
   </head>
-  <body class="body">
+  <body class="flex-col full-height">
     <include src="src/includes/header.html"></include>
-    <main class="main">
-      <div class="container" id="app">
-        <noscript>
-          <h2 class="flex-even">This content is only available with Javascript</h2>
-        </noscript>
-      </div>
+    <main id="app">
+      <noscript>
+        <div class="container flex-even">
+          <h2>This content is only available with Javascript</h2>
+        </div>
+      </noscript>
     </main>
-    <include src="src/includes/footer.html"></include>
   </body>
 </html>

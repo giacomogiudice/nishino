@@ -93,7 +93,7 @@
   };
 </script>
 
-<form role="search" class="searchbar">
+<search-bar>
   <div class="shadow" class:open on:click={collapse} />
   <input
     type="text"
@@ -103,7 +103,7 @@
     bind:value={text}
     on:keydown={handleKeyDown}
     on:focus={expand} />
-  <div bind:this={list} class="list" class:open>
+  <search-bar-list class:open bind:this={list}>
     <ul>
       {#each filteredItems as { value, label }, ind}
         <li
@@ -119,13 +119,13 @@
         <li class="no-items">∅</li>
       {/each}
     </ul>
-  </div>
-</form>
+  </search-bar-list>
+</search-bar>
 
 <style type="scss">
   @import "../style/variables.scss";
 
-  .searchbar {
+  search-bar {
     position: relative;
     width: 8ch;
     margin: $spacing--sm;
@@ -136,9 +136,9 @@
     cursor: text;
     width: 100%;
     padding: $spacing--xs $spacing--sm;
-    border: 2.5px solid $color--primary;
+    border: 2.5px solid $color--secondary;
     border-radius: $border-radius--md;
-    color: $color--text-lighter;
+    color: $color--secondary;
     background-color: $color--background;
     outline: none;
     @include text--md;
@@ -147,11 +147,10 @@
 
     &:hover,
     &:active {
-      color: $color--text;
+      background-color: $color--background-darker;
     }
 
     &:focus {
-      color: $color--text;
       text-align: left;
     }
 
@@ -165,7 +164,7 @@
     opacity: 0.5;
   }
 
-  .list {
+  search-bar-list {
     display: none;
     position: absolute;
     margin-top: $spacing--sm;
@@ -222,7 +221,7 @@
     left: 0;
     content: "";
     cursor: default;
-    z-index: 0;
+    z-index: 2;
 
     &.open {
       display: inherit;
