@@ -94,7 +94,9 @@
 </script>
 
 <search-bar>
-  <div class="shadow" class:open on:click={collapse} />
+  {#if open}
+    <div class="shadow" on:click={collapse} />
+  {/if}
   <input
     type="text"
     {placeholder}
@@ -171,6 +173,7 @@
     width: 100%;
     max-height: 5 * 3rem;
     overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     background-color: $color--background;
     z-index: 4;
     border-radius: $border-radius--md;
@@ -213,7 +216,6 @@
   }
 
   .shadow {
-    display: none;
     position: fixed;
     top: 0;
     right: 0;
@@ -222,9 +224,5 @@
     content: "";
     cursor: default;
     z-index: 2;
-
-    &.open {
-      display: inherit;
-    }
   }
 </style>

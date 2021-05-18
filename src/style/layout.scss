@@ -157,6 +157,9 @@ blockquote {
 }
 
 .header {
+  position: relative;
+  z-index: 2;
+
   .container {
     display: flex;
     align-items: center;
@@ -179,10 +182,9 @@ blockquote {
   }
 }
 
-.main {
-  padding-top: $spacing--md;
-  padding-bottom: $spacing--lg;
-  height: 100%;
+.about {
+  padding-top: $spacing--lg;
+  padding-bottom: $spacing--xl;
 }
 
 #app {
