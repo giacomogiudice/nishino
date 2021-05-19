@@ -5,6 +5,15 @@ $font-stack--header: Avenir, Helvetica Neue, Helvetica, sans-serif;
 $font-stack--content: $font-stack--default;
 $font-weight--header: 200;
 
+$font-size--xs: 0.75rem;
+$font-size--sm: 0.875rem;
+$font-size--md: 1rem;
+$font-size--lg: 1.125rem;
+$font-size--xl: 1.25rem;
+$font-size--xxl: 1.875rem;
+
+$line-height: 1.75;
+
 // Color schemes
 $color--primary: #16a085;
 $color--secondary: #3e6889;
@@ -26,6 +35,7 @@ $spacing--lg: 2rem;
 $spacing--xl: 4rem;
 $spacing--xxl: 8rem;
 
+// Misc
 $border-width--sm: 1px;
 $border-width--md: 2.5px;
 $border-width--lg: 5px;
@@ -34,37 +44,11 @@ $border-radius--sm: 2.5px;
 $border-radius--md: 5px;
 $border-radius--lg: 10px;
 
+$transition-time--sm: 0.15s;
+$transition-time--md: 0.3s;
+$transition-time--lg: 0.45s;
+
 $shadow: 0 4px 8px 0px rgba(0, 0, 0, 0.1);
-
-@mixin text--xxl {
-  font-size: 1.875rem;
-  line-height: 2rem;
-}
-
-@mixin text--xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-@mixin text--lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-}
-
-@mixin text--md {
-  font-size: 1rem;
-  line-height: 1.5rem;
-}
-
-@mixin text--sm {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-@mixin text--xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
 
 // Breakpoints
 $breakpoint--sm: 442px;

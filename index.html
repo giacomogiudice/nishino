@@ -3,7 +3,8 @@
   <head>
     <include src="src/includes/meta.html">{"title": "Home"}</include>
     <script type="module">
-      import "@/style/main.scss";
+      import "@/style/variables.scss";
+      import "@/style/layout.scss";
 
       import App from "@/components/App.svelte";
 
@@ -14,7 +15,7 @@
       export default app;
     </script>
   </head>
-  <body class="flex-col full-height">
+  <body class="flex-col">
     <include src="src/includes/header.html"></include>
     <main id="app">
       <noscript>

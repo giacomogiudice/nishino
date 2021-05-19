@@ -1,5 +1,4 @@
 <script>
-  import { slide } from "svelte/transition";
   import { range } from "$lib/array";
   import VirtualList from "./VirtualList.svelte";
   import SearchBar from "./SearchBar.svelte";
@@ -18,31 +17,22 @@
 
   // Loading state
   export let loading = true;
-
-  // Scroll state
-  let y;
-
-  const handleScroll = (event) => {
-    y = event.detail.scrollTop;
-  };
 </script>
 
-<Pinned bind:y let:pinned>
-  <!-- Use key to avoid building/destroying DOM elements -->
-  {#key pinned}
-    <nav class:pinned transition:slide={{ duration: 300 }}>
+<Pinned let:hidden offset={10}>
+  <nav class:hidden>
+    <div class="container">
       <SearchBar {items} on:select placeholder="Year" text={year} />
       <a role="button" href="/about/">About</a>
-    </nav>
-  {/key}
+    </div>
+  </nav>
 </Pinned>
-
 {#if loading}
   <div class="container announcer flex-even">
     <object type="image/svg+xml" data="/loading.svg" name="loading" aria-label="loading" />
   </div>
 {:else if papers.length}
-  <VirtualList items={papers} let:item={paper} on:scroll={handleScroll}>
+  <VirtualList items={papers} let:item={paper} threshold={600}>
     <Paper {...paper} />
   </VirtualList>
 {:else}
@@ -50,30 +40,33 @@
     <h2>No papers available</h2>
   </div>
 {/if}
+<div class="bottom-gap" />
 
 <style type="scss">
   @import "../style/variables.scss";
+  @import "../style/layout.scss";
 
-  :global(virtual-list-viewport) {
-    padding-top: $spacing--xl;
+  .bottom-gap {
+    margin-bottom: $spacing--xl;
   }
 
   nav {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    max-width: $width--container;
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    position: sticky;
+    top: 0;
     z-index: 1;
-    background-color: $color--background;
-    border-bottom: 1px solid $color--background-highlight;
+    width: 100%;
+    background-color: transparentize($color--background, 0.1);
+    transition: all $transition-time--md ease-in-out;
 
-    &:not(.pinned) {
-      display: none;
+    &.hidden {
+      transform: translateY(-100%);
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid $color--background-highlight;
     }
   }
 

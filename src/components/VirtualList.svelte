@@ -1,11 +1,11 @@
-<!-- Shamelessly stealing @sveltejs/svelte-virtual-list, but adding missing onscroll event -->
+<!-- Adapting the code form @sveltejs/svelte-virtual-list, but using window as the parent element -->
 <script>
-  import { onMount, createEventDispatcher, tick } from "svelte";
+  import { onMount, tick } from "svelte";
 
   // props
   export let items;
-  export let height = "100%";
   export let itemHeight = undefined;
+  export let threshold = 0;
 
   // read-only, but visible to consumers via bind:start
   export let start = 0;
@@ -14,9 +14,8 @@
   // local state
   let heightMap = [];
   let rows;
-  let viewport;
-  let contents;
-  let viewportHeight = 0;
+  let container;
+  let content;
   let visible;
   let mounted;
 
@@ -24,24 +23,24 @@
   let bottom = 0;
   let averageHeight;
 
-  const dispatch = createEventDispatcher();
-
   $: visible = items.slice(start, end).map((data, i) => {
     return { index: i + start, data };
   });
 
-  // whenever `items` changes, invalidate the current heightmap
-  $: if (mounted) refresh(items, viewportHeight, itemHeight);
+  // Whenever `items` changes, invalidate the current heightmap
+  $: if (mounted) refresh(items, itemHeight);
 
-  async function refresh(items, viewportHeight, itemHeight) {
-    const { scrollTop } = viewport;
+  const refresh = async (items, itemHeight) => {
+    // Set y-origin to the top of the virtual-list-content
+    let { top: y } = content.getBoundingClientRect();
 
-    await tick(); // wait until the DOM is up to date
+    // Make sure the DOM is up to date
+    await tick();
 
-    let contentHeight = top - scrollTop;
+    // Add current row heights until you are past the viewport
     let i = start;
 
-    while (contentHeight < viewportHeight && i < items.length) {
+    while (y < window.innerHeight + threshold && i < items.length) {
       let row = rows[i - start];
 
       if (!row) {
@@ -51,39 +50,37 @@
       }
 
       const rowHeight = (heightMap[i] = itemHeight || row.offsetHeight);
-      contentHeight += rowHeight;
+      y += rowHeight;
       i += 1;
     }
 
     end = i;
 
     const remaining = items.length - end;
-    averageHeight = (top + contentHeight) / end;
+    averageHeight = (top + y) / end;
 
     bottom = remaining * averageHeight;
     heightMap.length = items.length;
-  }
+  };
 
-  async function handleScroll() {
-    const { scrollTop } = viewport;
+  const update = async () => {
+    const { top: containerTop } = container.getBoundingClientRect();
 
-    dispatch("scroll", { scrollTop });
-
-    const oldStart = start;
-
+    // Recompute height map for visible rows
     for (let v = 0; v < rows.length; v += 1) {
       heightMap[start + v] = itemHeight || rows[v].offsetHeight;
     }
 
+    // Start adding row heights into y
     let i = 0;
     let y = 0;
 
     while (i < items.length) {
       const rowHeight = heightMap[i] || averageHeight;
-      if (y + rowHeight > scrollTop) {
+      // Set `start` we are going to enter the viewport
+      if (containerTop + y + rowHeight > -threshold) {
         start = i;
         top = y;
-
         break;
       }
 
@@ -91,72 +88,46 @@
       i += 1;
     }
 
+    // Keep adding past `start` until we exit the viewport
     while (i < items.length) {
       y += heightMap[i] || averageHeight;
       i += 1;
 
-      if (y > scrollTop + viewportHeight) break;
+      if (containerTop + y > window.innerHeight + threshold) break;
     }
 
     end = i;
 
+    // Estimate bottom padding
     const remaining = items.length - end;
     averageHeight = y / end;
-
-    while (i < items.length) heightMap[i++] = averageHeight;
     bottom = remaining * averageHeight;
+  };
 
-    // prevent jumping if we scrolled up into unknown territory
-    if (start < oldStart) {
-      await tick();
-
-      let expectedHeight = 0;
-      let actualHeight = 0;
-
-      for (let i = start; i < oldStart; i += 1) {
-        if (rows[i - start]) {
-          expectedHeight += heightMap[i];
-          actualHeight += itemHeight || rows[i - start].offsetHeight;
-        }
-      }
-
-      const d = actualHeight - expectedHeight;
-      viewport.scrollTo(0, scrollTop + d);
-    }
-  }
-
-  // trigger initial refresh
+  // Trigger initial refresh
   onMount(() => {
-    rows = contents.getElementsByTagName("virtual-list-row");
+    rows = content.getElementsByTagName("virtual-list-row");
     mounted = true;
   });
 </script>
 
-<virtual-list-viewport
-  bind:this={viewport}
-  bind:offsetHeight={viewportHeight}
-  on:scroll={handleScroll}
-  style="height: {height};">
-  <virtual-list-contents
-    bind:this={contents}
-    style="padding-top: {top}px; padding-bottom: {bottom}px;">
+<svelte:window on:scroll={update} on:resize={update} />
+
+<virtual-list-container
+  bind:this={container}
+  style="padding-top: {top}px; padding-bottom: {bottom}px;">
+  <virtual-list-content bind:this={content}>
     {#each visible as row (row.index)}
       <virtual-list-row>
         <slot item={row.data}>Missing template</slot>
       </virtual-list-row>
     {/each}
-  </virtual-list-contents>
-</virtual-list-viewport>
+  </virtual-list-content>
+</virtual-list-container>
 
 <style>
-  virtual-list-viewport {
-    position: relative;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    display: block;
-  }
-
-  virtual-list-contents,
+  virtual-list-container,
+  virtual-list-content,
   virtual-list-row {
     display: block;
   }

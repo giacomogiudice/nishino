@@ -1,25 +1,25 @@
 <script>
-  export let offset = 10;
+  export let offset = 0;
   export let tolerance = 20;
-  export let y = 0;
 
+  let y;
   let yLast = 0;
 
-  $: pinned = update(y);
+  $: hidden = update(y);
 
   const update = (y) => {
     const delta = y - yLast;
     yLast = y;
 
     // Keep it open close to the top
-    if (y < offset) return true;
+    if (y < offset) return false;
     // Ignore small changes
-    if (Math.abs(delta) < tolerance) return pinned;
+    if (Math.abs(delta) < tolerance) return hidden;
     // Otherwise delta < 0 is up, delta > 0 is down
-    return delta < 0;
+    return delta > 0;
   };
 </script>
 
-<pinned-content>
-  <slot {pinned} />
-</pinned-content>
+<svelte:window bind:scrollY={y} />
+
+<slot {hidden} />

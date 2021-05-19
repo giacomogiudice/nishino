@@ -6,19 +6,23 @@
 
 <details class="container">
   <summary>
-    <p class="title"><Latex text={title} /></p>
-    <p class="authors">{authors.join(", ")}</p>
-    <p class="info">
-      <a href={url}>{id}</a> | {new Date(published).toDateString()} | {categories.join(" ")} |
-      <a href={pdf}>PDF</a>
-    </p>
+    <section>
+      <p class="title"><Latex text={title} /></p>
+      <p class="authors">{authors.join(", ")}</p>
+      <p class="info">
+        <a href={url}>{id}</a> | {new Date(published).toDateString()} | {categories.join(" ")} |
+        <a href={pdf}>PDF</a>
+      </p>
+    </section>
   </summary>
-  <p class="summary"><Latex text={summary} /></p>
-  {#if journal_ref}
-    <p class="info">
-      Published in <a href={`http://dx.doi.org/${doi}`}>{journal_ref}</a>
-    </p>
-  {/if}
+  <section>
+    <p class="summary"><Latex text={summary} /></p>
+    {#if journal_ref}
+      <p class="info">
+        Published in <a href={`http://dx.doi.org/${doi}`}>{journal_ref}</a>
+      </p>
+    {/if}
+  </section>
 </details>
 
 <style type="scss">
@@ -26,20 +30,18 @@
   @import "../style/layout.scss";
 
   details {
-    padding: $spacing--md $spacing--md;
     border-bottom: 1px solid $color--background-highlight;
 
-    &:hover,
-    &:active,
-    &:focus,
-    &:focus-visible {
-      cursor: pointer;
-      background-color: $color--background-darker;
-      border-radius: $border-radius--sm;
-    }
-
     summary {
+      cursor: pointer;
       list-style: none;
+
+      &:hover,
+      &:focus {
+        background-color: $color--background-darker;
+        outline: 0;
+      }
+
       &::marker,
       &::-webkit-details-marker {
         display: none;
@@ -47,8 +49,12 @@
     }
   }
 
+  section {
+    padding: $spacing--md;
+  }
+
   .title {
-    @include text--lg;
+    font-size: $font-size--lg;
   }
 
   .authors {
@@ -56,7 +62,7 @@
   }
 
   .info {
-    @include text--sm;
+    font-size: $font-size--sm;
     color: $color--text-lighter;
   }
 

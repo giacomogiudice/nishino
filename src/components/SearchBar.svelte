@@ -130,40 +130,10 @@
   search-bar {
     position: relative;
     width: 8ch;
-    margin: $spacing--sm;
+    z-index: 2;
   }
 
   input {
-    box-sizing: border-box;
-    cursor: text;
-    width: 100%;
-    padding: $spacing--xs $spacing--sm;
-    border: 2.5px solid $color--secondary;
-    border-radius: $border-radius--md;
-    color: $color--secondary;
-    background-color: $color--background;
-    outline: none;
-    @include text--md;
-    z-index: 4;
-    text-align: center;
-
-    &:hover,
-    &:active {
-      background-color: $color--background-darker;
-    }
-
-    &:focus {
-      text-align: left;
-    }
-
-    &:placeholder-shown {
-      text-align: left;
-    }
-  }
-
-  ::placeholder {
-    color: $color--text-lighter;
-    opacity: 0.5;
   }
 
   search-bar-list {
@@ -171,7 +141,7 @@
     position: absolute;
     margin-top: $spacing--sm;
     width: 100%;
-    max-height: 5 * 3rem;
+    max-height: 5 * 45px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     background-color: $color--background;
@@ -223,6 +193,5 @@
     left: 0;
     content: "";
     cursor: default;
-    z-index: 2;
   }
 </style>
