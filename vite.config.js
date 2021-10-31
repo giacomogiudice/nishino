@@ -1,5 +1,5 @@
 import path from "path";
-import svelte from "@sveltejs/vite-plugin-svelte";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 import preprocess from "svelte-preprocess";
 import posthtml from "./plugins/vite-plugin-posthtml";
 import include from "posthtml-include";
@@ -19,6 +19,11 @@ export default {
       preprocess: preprocess(),
       compilerOptions: {
         cssHash: ({ hash, css, name }) => `${kebabCase(name)}--${hash(css)}`
+      },
+      onwarn: (warning, handler) => {
+        const { code } = warning;
+        if (code === "css-unused-selector") return;
+        handler(warning);
       }
     })
   ],
