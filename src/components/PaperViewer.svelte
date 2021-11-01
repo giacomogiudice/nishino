@@ -1,4 +1,5 @@
 <script>
+  import Fuse from "fuse.js";
   import { range } from "$lib/array";
   import VirtualList from "./VirtualList.svelte";
   import SearchBar from "./SearchBar.svelte";
@@ -17,12 +18,27 @@
 
   // Loading state
   export let loading = true;
+
+  // Filtering functionality
+  let text = "";
+
+  $: fuse = new Fuse(papers, {
+    keys: ["id", "title", "authors", "categories", "url", "pdf"],
+    shouldSort: false,
+    threshold: 0.3,
+    ignoreLocation: true
+  });
+
+  $: filteredPapers = text !== "" ? fuse.search(text).map((obj) => obj["item"]) : papers;
 </script>
 
 <Pinned let:hidden offset={10}>
   <nav class:hidden>
     <div class="container">
       <SearchBar {items} on:select placeholder="Year" text={year} />
+      <filter-bar>
+        <input type="text" class="filter" bind:value={text} placeholder="Search" />
+      </filter-bar>
       <a role="button" href="/about/">About</a>
     </div>
   </nav>
@@ -31,8 +47,8 @@
   <div class="container announcer flex-even">
     <object type="image/svg+xml" data="/loading.svg" name="loading" aria-label="loading" />
   </div>
-{:else if papers.length}
-  <VirtualList items={papers} let:item={paper} threshold={600}>
+{:else if filteredPapers.length}
+  <VirtualList items={filteredPapers} let:item={paper} threshold={600}>
     <Paper {...paper} />
   </VirtualList>
 {:else}
@@ -68,6 +84,12 @@
       justify-content: space-between;
       border-bottom: 1px solid $color--background-highlight;
     }
+  }
+
+  filter-bar {
+    width: 32ch;
+    margin-left: $spacing--sm;
+    margin-right: $spacing--sm;
   }
 
   .announcer {

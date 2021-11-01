@@ -129,11 +129,12 @@
 
   search-bar {
     position: relative;
-    width: 8ch;
+    width: 7.5ch;
     z-index: 2;
   }
 
   input {
+    min-width: 4ch;
   }
 
   search-bar-list {
