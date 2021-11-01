@@ -2,7 +2,7 @@
 
 A small reader for Tomotoshi Nishino's selection of papers on tensor networks.
 
-Check out the [website](https://nishino.netlify.app/).
+Check out the [website](https://tensornet.work/).
 
 ## Abstract
 
@@ -29,7 +29,7 @@ Each entry in the database corresponds uniquely to a paper, and contains informa
 The API hosted on Netlify responds to requests of the form
 
 ```
-https://nishino.netlify.app/api/query?
+https://tensornet.work/api/query?
 ```
 
 with query parameters `year`, `validate`, `size` and `cursor`.
@@ -51,9 +51,9 @@ Unfortunately, it's not static enough to go in the `public` folder.
 
 ## Todo
 
-Here is a list of improvement
+Here is a list of improvements
 
-- Infinite scroll.
+- ~~Infinite scroll~~.
 - Add a marker for Prof. Nishino's RGB rating.
 - Pre-render certain pages on the server or at build time. As long as the site is not very popular it makes no sense to pre-fetch the content of the landing page, but previous years can be optimized.
 - Try SvelteKit. It seems promising since it offers out-of-the-box SSR and integration with Netlify.
