@@ -16,7 +16,7 @@
     "cheerio": "^1.0.0-rc.10",
     "fuse.js": "^6.4.6",
     "glob": "^7.2.0",
-    "html-entities": "^2.3.2",
+    "html-entities": "^2.3.3",
     "katex": "^0.15.0",
     "node-fetch": "^3.0.0",
     "svelte": "^3.44.0"
