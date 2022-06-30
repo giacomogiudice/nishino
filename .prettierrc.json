@@ -3,5 +3,5 @@
   "trailingComma": "none",
   "printWidth": 100,
   "quoteProps": "consistent",
-  "svelteBracketNewLine": false
+  "bracketSameLine": true
 }
