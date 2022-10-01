@@ -32,7 +32,7 @@
     "posthtml-include": "^1.7.4",
     "prettier": "^2.7.1",
     "prettier-plugin-svelte": "^2.7.0",
-    "sass": "^1.53.0",
+    "sass": "^1.55.0",
     "svelte-preprocess": "^4.10.7",
     "vite": "^2.9.13"
   },
