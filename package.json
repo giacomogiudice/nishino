@@ -19,7 +19,7 @@
     "html-entities": "^2.3.3",
     "katex": "^0.16.0",
     "node-fetch": "^3.2.6",
-    "svelte": "^3.48.0"
+    "svelte": "^3.53.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
