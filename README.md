@@ -59,6 +59,34 @@ Here is a list of improvements
 - Try SvelteKit. It seems promising since it offers out-of-the-box SSR and integration with Netlify.
 - Information like the journal ref. and the DOI are not updated.
 
+## Development Setup
+
+Once you have cloned the package, you can work on it locally and see the results with
+
+```bash
+npm run dev
+```
+
+this will start a local server using Vite, which supports fast reloading.
+It will not actually connect to the database but will use a mockup.
+
+To build the project, you can use
+
+```bash
+npm run build
+```
+
+You can find the output in the `dist/` folder.
+
+To actually test with the real dataset, you need to have the [Netlify CLI](https://docs.netlify.com/cli/get-started/) installed.
+Once you have it and have linked it to the database, you can develop locally with
+
+```bash
+netlify dev
+```
+
+See also `npm run` and `netlify -h` for more commands.
+
 ## FaunaDB Setup
 
 In order to test the database locally, we use the `netlify dev` command from ![Netlify CLI](https://cli.netlify.com/).

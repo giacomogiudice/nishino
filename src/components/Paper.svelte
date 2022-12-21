@@ -25,7 +25,7 @@
   </section>
 </details>
 
-<style type="scss">
+<style lang="scss">
   @import "../style/variables.scss";
   @import "../style/layout.scss";
 

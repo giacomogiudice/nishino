@@ -124,7 +124,7 @@
   </search-bar-list>
 </search-bar>
 
-<style type="scss">
+<style lang="scss">
   @import "../style/variables.scss";
 
   search-bar {

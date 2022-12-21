@@ -58,7 +58,7 @@
 {/if}
 <div class="bottom-gap" />
 
-<style type="scss">
+<style lang="scss">
   @import "../style/variables.scss";
   @import "../style/layout.scss";
 

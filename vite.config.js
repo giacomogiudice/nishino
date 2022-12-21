@@ -3,6 +3,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import preprocess from "svelte-preprocess";
 import posthtml from "./plugins/vite-plugin-posthtml";
 import include from "posthtml-include";
+import autoprefixer from "autoprefixer";
 
 export default {
   publicDir: "static",
@@ -16,7 +17,11 @@ export default {
       plugins: [include()]
     }),
     svelte({
-      preprocess: preprocess(),
+      preprocess: preprocess({
+        postcss: {
+          plugins: [autoprefixer()]
+        }
+      }),
       compilerOptions: {
         cssHash: ({ hash, css, name }) => `${kebabCase(name)}--${hash(css)}`
       },
@@ -35,9 +40,10 @@ export default {
   },
   rollupDedupe: ["svelte"],
   server: {
+    port: 5173,
     proxy: {
       "/api/query": {
-        target: "http://localhost:3000/",
+        target: "http://localhost:5173/",
         rewrite: () => "mock/proxy.json"
       }
     }
