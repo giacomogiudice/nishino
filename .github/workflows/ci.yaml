@@ -1,11 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-    types: [opened, synchronize, closed]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   deploy:
@@ -26,9 +21,10 @@ jobs:
           npm run build --if-present
 
       - name: Deploy
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: netlify/actions/cli@master
         with:
-          args: deploy --prod --message="From GitHub Actions"
+          args: deploy --prod --message='From GitHub Actions'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
