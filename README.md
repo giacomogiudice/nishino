@@ -1,5 +1,13 @@
 # DMRG Preprints
 
+[![CI][ci-img]][ci-url]
+[![Netlify Status][netlify-img]][netlify-url]
+
+[ci-img]: https://github.com/giacomogiudice/nishino/workflows/CI/badge.svg
+[ci-url]: https://github.com/giacomogiudice/nishino/actions?query=workflow%3ACI
+[netlify-img]: https://api.netlify.com/api/v1/badges/8c331476-72ba-4331-9bf5-9800bea0f3b5/deploy-status
+[netlify-url]: https://app.netlify.com/sites/nishino/deploys
+
 A small reader for Tomotoshi Nishino's selection of papers on tensor networks.
 
 Check out the [website](https://tensornet.work/).
