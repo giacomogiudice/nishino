@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -27,17 +27,18 @@ jobs:
         id: deploy
         uses: netlify/actions/cli@master
         with:
-          args: deploy --message=$MESSAGE
+          args: preview --message=$MESSAGE
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          MESSAGE: "Commit ${{ github.ref_name }}@${{ github.sha }}"
+          MESSAGE: "Commit ${{ github.ref_name }} ${{ github.sha }}"
 
-      - name: Add Message
-        uses: unsplash/comment-on-pr@v1.3.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OUTPUT: "This pull request has been deployed to Netlify.\n\n📎 View log:\t${{ steps.deploy.outputs.NETLIFY_LOGS_URL }}\n🔍 Preview:\t${{ steps.deploy.outputs.NETLIFY_URL }}"
+      - name: Comment
+        uses: thollander/actions-comment-pull-request@v2
         with:
-          msg: ${{ env.OUTPUT }}
-          check_for_duplicate_msg: false
+          message: |
+            This pull request has been deployed to Netlify.
+
+            📎 View log: ${{ steps.deploy.outputs.NETLIFY_LOGS_URL }}
+            🔍 Preview: ${{ steps.deploy.outputs.NETLIFY_URL }}
+
