@@ -27,11 +27,11 @@ jobs:
         id: deploy
         uses: netlify/actions/cli@master
         with:
-          args: preview --message=$MESSAGE
+          args: deploy --message="$MESSAGE"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          MESSAGE: "Commit ${{ github.ref_name }} ${{ github.sha }}"
+          MESSAGE: "Commit ${{ github.ref_name }}@${{ github.sha }}"
 
       - name: Comment
         uses: thollander/actions-comment-pull-request@v2
