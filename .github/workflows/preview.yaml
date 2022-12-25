@@ -1,0 +1,43 @@
+name: Preview
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy
+        id: deploy
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy --message="$MESSAGE"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          MESSAGE: "${{ github.ref_name }}@${{ github.sha }}"
+
+      - name: Comment
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            This pull request has been deployed to Netlify.
+
+            📎 View log: ${{ steps.deploy.outputs.NETLIFY_LOGS_URL }}
+            🔍 Preview: ${{ steps.deploy.outputs.NETLIFY_URL }}
