@@ -8,7 +8,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "prettier --check --plugin-search-dir=. --ignore-path .gitignore . && eslint --ignore-path .gitignore .",
-    "format": "prettier --write --plugin-search-dir=. --ignore-path .gitignore ."
+    "format": "prettier --write --plugin-search-dir=. --ignore-path .gitignore .",
+    "db-init": "node functions/util/setup.js"
   },
   "author": "Giacomo Giudice",
   "license": "MIT",
@@ -19,8 +20,8 @@
     "glob": "^8.0.3",
     "html-entities": "^2.3.3",
     "katex": "^0.16.0",
-    "netlify-cli": "^12.4.1",
     "node-fetch": "^3.2.6",
+    "redis": "^4.5.1",
     "svelte": "^3.48.0"
   },
   "devDependencies": {
