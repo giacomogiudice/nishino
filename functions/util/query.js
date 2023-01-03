@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 import * as quattro from "./quattro.js";
 import * as arxiv from "./arxiv.js";
-import { unique, difference, union } from "../../lib/array.js";
+import { difference, union } from "../../lib/array.js";
 
 export const client = createClient({
   url: process.env.REDIS_URL
@@ -37,18 +37,16 @@ export const ids = async (options) => {
   tic = Date.now();
   let storedIds = await client.zRangeByScore("index", year, year);
   toc = Date.now();
-  console.log(`Retrieved stored ids in ${toc - tic} ms,`, storedIds.length, "papers");
+  console.log(`Retrieved stored ids in ${toc - tic} ms,`, storedIds.length, "entries");
 
   let remoteIds = [];
   let missingIds = [];
   if (validate) {
     // Fetch paper IDs from source
     tic = Date.now();
-    //TODO rename remoteIds, storedIds
-    const remote = await quattro.getPageDataByYear(year);
-    remoteIds = remote.data.filter(unique);
+    remoteIds = await quattro.getIdsByYear(year);
     toc = Date.now();
-    console.log(`Scraped source in ${toc - tic} ms,`, remoteIds.length, "papers");
+    console.log(`Scraped source in ${toc - tic} ms,`, remoteIds.length, "entries");
   }
 
   if (refresh) {
@@ -63,37 +61,45 @@ export const ids = async (options) => {
     const pipeline = client.multi();
     missingIds.forEach((id) => pipeline.exists(id));
     const mask = await pipeline.exec();
-    console.log("mask", mask);
     missingIds = missingIds.filter((item, i) => !mask[i]);
     toc = Date.now();
-    console.log(`Filtered missing papers  in ${toc - tic} ms,`, missingIds.length, "papers");
+    console.log(`Filtered missing entries in ${toc - tic} ms,`, missingIds.length, "entries");
   }
 
   if (missingIds.length) {
     // Fetch data for the missing papers from the arXiv
     tic = Date.now();
-    const { data: missing } = await arxiv.getPapersByIdArray(missingIds);
+    const missing = await arxiv.getPapersByIds(missingIds);
     toc = Date.now();
-    console.log(`Retrieved data in ${toc - tic} ms,`, missing.length, "papers");
+    console.log(`Retrieved data in ${toc - tic} ms,`, missingIds.length, "entries");
 
     // Add them to the database
     tic = Date.now();
     const pipeline = client.multi();
-    missing.forEach((paper) => pipeline.json.set(paper.id, "$", paper));
+    for (const id in missing) {
+      pipeline.json.set(id, "$", missing[id]);
+    }
     const added = await pipeline.exec();
 
-    const indexed = await client.zAdd(
-      "index",
-      missing.map((paper) => {
-        return { score: paper.year, value: paper.id };
-      })
-    );
+    const list = Object.keys(missing).map((id) => {
+      return { score: missing[id].year, value: id };
+    });
+    const indexed = await client.zAdd("index", list);
+
     const complete = added.every((res) => res === "OK") && typeof indexed === "number";
     toc = Date.now();
-    console.log(`Updated database in ${toc - tic} ms,`, "complete:", complete);
+    console.log(`Updated database in ${toc - tic} ms,`, indexed, "new entries");
+    if (!complete) {
+      throw new Error("Failed to update database");
+    }
 
-    if (validate && !refresh) {
-      storedIds.push(...missingIds);
+    if (validate) {
+      if (refresh) {
+        // filter missing by year
+        storedIds = Object.keys(missing).filter((id) => missing[id].year === year);
+      } else {
+        storedIds.push(...missingIds);
+      }
     }
   }
 

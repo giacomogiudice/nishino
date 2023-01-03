@@ -10,12 +10,12 @@ const resolveUrl = (year) => {
   return `${QUATTRO_URL}/dmrg/condmat${suffix}.html`;
 };
 
-export const getPageDataByYear = async (year) => {
+export const getIdsByYear = async (year) => {
   const firstYear = 1994;
   const currentYear = new Date().getFullYear();
   if (year < firstYear || year > currentYear) {
     console.warn(`Requested year ${year} is not available from ${QUATTRO_URL}`);
-    return { timestamp: null, data: [] };
+    return [];
   }
   const url = resolveUrl(year);
 
@@ -25,13 +25,11 @@ export const getPageDataByYear = async (year) => {
   if (!response || !response.ok) {
     throw new Error(`Bad response from ${url}\n ${JSON.stringify(response, null, 2)}`);
   }
-  // Save timestamp
-  const timestamp = new Date(response.headers.get("last-modified"));
 
   // Scrape links from page text
   const body = await response.text();
   const $ = cheerio.load(body);
-  const data = $("a")
+  const ids = $("a")
     .map((_, elem) => {
       const attr = $(elem).attr("href");
       const href = new URL(attr, QUATTRO_URL);
@@ -39,5 +37,5 @@ export const getPageDataByYear = async (year) => {
     })
     .get();
 
-  return { timestamp, data };
+  return ids;
 };

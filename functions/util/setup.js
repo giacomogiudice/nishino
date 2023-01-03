@@ -20,13 +20,6 @@ export const setup = async () => {
 
   // Close connection to database
   await client.disconnect();
-
-  console.log("");
-  console.log("Done 🎉");
 };
 
-setup()
-  .then(() => {
-    return 0;
-  })
-  .catch((err) => console.error(err));
+setup().then(() => console.log("Done 🎉"));
