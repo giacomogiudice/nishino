@@ -1,4 +1,4 @@
-import { client, ids } from "./query.js";
+import { client, ids } from "./queries.js";
 import { range } from "../../lib/array.js";
 
 export const setup = async () => {
@@ -11,7 +11,7 @@ export const setup = async () => {
 
   for (let year of range(firstYear, lastYear)) {
     console.log("Generating data for year", year);
-    const data = await ids({ year: year, validate: true, refresh: true });
+    const data = await ids({ year: year, update: true, refresh: true });
     if (!data.length) {
       throw new Error(`No papers for year ${year}`);
     }

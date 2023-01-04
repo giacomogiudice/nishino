@@ -22,7 +22,7 @@ export const getPapersByIds = async (ids) => {
 
   const partials = await Promise.all(promises);
   // Flatten partials
-  return Object.assign.apply({}, partials);
+  return Array.prototype.concat.apply([], partials);
 };
 
 const extractPapers = (body, ids) => {
@@ -30,9 +30,8 @@ const extractPapers = (body, ids) => {
 
   // Extract meaningful tags
   const $ = cheerio.load(body, { xmlMode: true });
-  const data = {};
-  $("entry")
-    .each((ind, elem) => {
+  const data = $("entry")
+    .map((ind, elem) => {
       const id = ids[ind];
       const published = $(elem).children("published").text();
       const year = new Date(published).getFullYear();
@@ -53,7 +52,8 @@ const extractPapers = (body, ids) => {
       const journal_ref = $(elem).children("arxiv\\:journal_ref").text();
       const doi = $(elem).children("arxiv\\:doi").text();
 
-      data[id] = {
+      return {
+        id,
         year,
         published,
         title,

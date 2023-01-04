@@ -22,8 +22,8 @@
   const update = async () => {
     // Call API
     loading = true;
-    let url = `/api/query?year=${year}&size=2000`;
-    if (year === currentYear) url += `&validate=true`;
+    let url = `/api/papers?year=${year}`;
+    if (year === currentYear) url += `&update=true`;
 
     const res = await fetch(url);
 
@@ -32,8 +32,7 @@
       throw new Error(`Could not load ${url}`);
     }
 
-    const { data } = await res.json();
-    papers = data;
+    papers = await res.json();
     loading = false;
     // Commit new state to history API
     history.replaceState({ year, papers }, null, `/year/${year}`);

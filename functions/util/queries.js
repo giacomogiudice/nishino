@@ -30,7 +30,7 @@ export const parser = (input, defaults) => {
 };
 
 export const ids = async (options) => {
-  const { year, validate, refresh } = options;
+  const { year, update, refresh } = options;
   let tic, toc;
 
   // Fetch papers
@@ -41,7 +41,7 @@ export const ids = async (options) => {
 
   let remoteIds = [];
   let missingIds = [];
-  if (validate) {
+  if (update) {
     // Fetch paper IDs from source
     tic = Date.now();
     remoteIds = await quattro.getIdsByYear(year);
@@ -55,7 +55,7 @@ export const ids = async (options) => {
     missingIds = difference(remoteIds, storedIds);
   }
 
-  if (validate && !refresh && missingIds.length) {
+  if (update && !refresh && missingIds.length) {
     // Some papers might be mislabelled, check in database if they alrady exist
     tic = Date.now();
     const pipeline = client.multi();
@@ -76,13 +76,11 @@ export const ids = async (options) => {
     // Add them to the database
     tic = Date.now();
     const pipeline = client.multi();
-    for (const id in missing) {
-      pipeline.json.set(id, "$", missing[id]);
-    }
+    missing.forEach((entry) => pipeline.json.set(entry.id, "$", entry));
     const added = await pipeline.exec();
 
-    const list = Object.keys(missing).map((id) => {
-      return { score: missing[id].year, value: id };
+    const list = missing.map((entry) => {
+      return { score: entry.year, value: entry.id };
     });
     const indexed = await client.zAdd("index", list);
 
@@ -93,10 +91,10 @@ export const ids = async (options) => {
       throw new Error("Failed to update database");
     }
 
-    if (validate) {
+    if (update) {
       if (refresh) {
         // filter missing by year
-        storedIds = Object.keys(missing).filter((id) => missing[id].year === year);
+        storedIds = missing.filter((entry) => entry.year === year).map((entry) => entry.id);
       } else {
         storedIds.push(...missingIds);
       }

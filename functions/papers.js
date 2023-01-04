@@ -1,10 +1,10 @@
-import { client, parser, papers } from "./util/query.js";
+import { client, parser, papers } from "./util/queries.js";
 
 export const handler = async (event) => {
   const currentYear = new Date().getFullYear();
   const params = parser(event.queryStringParameters, {
     year: currentYear,
-    validate: false,
+    update: false,
     refresh: false
   });
 
