@@ -5,6 +5,10 @@ export const setup = async () => {
   // Open connection to database
   await client.connect();
 
+  if (!client.isReady) {
+    throw new Error("Cannot connect to database");
+  }
+
   // Populate database for all years
   const firstYear = 1994;
   const lastYear = new Date().getFullYear();

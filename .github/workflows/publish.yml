@@ -31,3 +31,9 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           MESSAGE: "${{ github.ref_name }}@${{ github.sha }}"
+
+      - name: Update database
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: npm run db-update
+        env:
+          REDIS_URL: ${{ secrets.REDIS_URL }}

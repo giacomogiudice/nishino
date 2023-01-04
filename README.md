@@ -3,8 +3,8 @@
 [![CI][ci-img]][ci-url]
 [![Netlify Status][netlify-img]][netlify-url]
 
-[ci-img]: https://github.com/giacomogiudice/nishino/actions/workflows/publish.yaml/badge.svg
-[ci-url]: https://github.com/giacomogiudice/nishino/actions/workflows/publish.yaml
+[ci-img]: https://github.com/giacomogiudice/nishino/actions/workflows/publish.yml/badge.svg
+[ci-url]: https://github.com/giacomogiudice/nishino/actions/workflows/publish.yml
 [netlify-img]: https://api.netlify.com/api/v1/badges/8c331476-72ba-4331-9bf5-9800bea0f3b5/deploy-status
 [netlify-url]: https://app.netlify.com/sites/nishino/deploys
 
@@ -24,7 +24,7 @@ The reader needs to be always up-to-date, as fast as possible, and minimalistic.
 
 For a seemingly simple task, there are remarkably many parts that come together.
 
-- 💾 [FaunaDB](https://fauna.com/) database
+- 💾 [Redis](https://redis.io/) caching (with RedisJSON)
 - 🤖 API using [Netlify functions](https://www.netlify.com/products/functions/)
 - 📦 [Vite](https://vitejs.dev/) for bundling and frontend dev environment
 - ✏️ HTML templates with [PostHTML](https://github.com/posthtml/)
@@ -37,14 +37,16 @@ Each entry in the database corresponds uniquely to a paper, and contains informa
 The API hosted on Netlify responds to requests of the form
 
 ```
-https://tensornet.work/api/query?
+https://tensornet.work/api/ids?
+https://tensornet.work/api/papers?
+
 ```
 
-with query parameters `year`, `validate`, `size` and `cursor`.
+with query parameters `year`, `update`, and `refresh`.
 
-If `validate` is `true`, the API will request the original website for the specified `year`, extract the `arxiv.org` links, and check if they are present in the database.
+If `update` is `true`, the API will request the original website for the specified `year`, extract the `arxiv.org` links, and check if they are present in the database.
 If not, it requests the information of the missing papers from the [arXiv API](http://arxiv.org/help/api/), and send them to the database.
-The parameters `size` and `cursor` are used for pagination.
+Additionally, the `refresh` option updates all existing entries with data from the arXiv API.
 
 The frontend components are written with Svelte.
 It seemed to me the best choice, since it aimed at being a lightweight and fast reactive framework.
@@ -62,12 +64,14 @@ Unfortunately, it's not static enough to go in the `public` folder.
 Here is a list of improvements
 
 - ~~Infinite scroll~~.
+- ~~Information like the journal ref. and the DOI are not updated.~~
 - Add a marker for Prof. Nishino's RGB rating.
 - Pre-render certain pages on the server or at build time. As long as the site is not very popular it makes no sense to pre-fetch the content of the landing page, but previous years can be optimized.
 - Try SvelteKit. It seems promising since it offers out-of-the-box SSR and integration with Netlify.
-- Information like the journal ref. and the DOI are not updated.
 
 ## Development Setup
+
+### Frontend
 
 Once you have cloned the package, you can work on it locally and see the results with
 
@@ -77,6 +81,7 @@ npm run dev
 
 this will start a local server using Vite, which supports fast reloading.
 It will not actually connect to the database but will use a mockup.
+This is useful for frontend development only.
 
 To build the project, you can use
 
@@ -86,8 +91,39 @@ npm run build
 
 You can find the output in the `dist/` folder.
 
-To actually test with the real dataset, you need to have the [Netlify CLI](https://docs.netlify.com/cli/get-started/) installed.
-Once you have it and have linked it to the database, you can develop locally with
+### Database setup
+
+First create a database on [Redis Labs](https://app.redislabs.com/) or any Redis provider.
+You can also host your own by installing `redis-server` and `redis-cli` or using the [docker image](https://redis.io/docs/stack/get-started/install/docker/).
+It must have the **RedisJSON** module available and activated.
+Since the Netlify functions are hosted at `us-east-1`, it makes sense to choose that as a location.
+To develop locally, you can create a `.env` file on the root folder, with the following variable
+
+```
+REDIS_URL=redis://<user>:<password>@<hostname>:<port>
+```
+
+and add it to the Netlify environment with
+
+```
+netlify env:import .env
+```
+
+Alternatively you can manually import it with `netlify env:set REDIS_URL <value>`.
+
+If you have the tool `redis-cli`, you can interactively log into the database from your terminal
+
+```
+source .env
+redis-cli -u $REDIS_URL
+```
+
+This can be useful, for example to empty the database.
+
+### Backend
+
+To actually run the Lambda functions and test with the real dataset, you need to have the [Netlify CLI](https://docs.netlify.com/cli/get-started/) installed.
+Once you have it, you can develop locally with
 
 ```bash
 netlify dev
@@ -95,95 +131,9 @@ netlify dev
 
 See also `npm run` and `netlify -h` for more commands.
 
-## FaunaDB Setup
+### GitHub Actions
 
-In order to test the database locally, we use the `netlify dev` command from ![Netlify CLI](https://cli.netlify.com/).
-To automagically add a FaunaDB database to the repository, run the following commands
-
-```bash
-netlify link
-netlify addons:create fauna
-netlify addons:auth fauna
-```
-
-Next head over to https://dashboard.fauna.com and start by uploading the `schema.gql` file.
-There is a single `Paper` type defined, which contains information about a single paper.
-Now we need to define some custom function attached to the GraphQL queries.
-
-To get the missing `id`s from an array of `id`s, we define the function `missingIdsFromArray`
-
-```js
-Query(
-  Lambda(
-    ["array"],
-    Filter(Var("array"), Lambda("elem", IsEmpty(Match(Index("paperById"), Var("elem")))))
-  )
-);
-```
-
-In order to get papers of a certain year ordered by publication date, we define a new index
-
-```js
-CreateIndex({
-  name: "papersByYearAndPublished",
-  source: Collection("Paper"),
-  terms: { field: ["data", "year"] },
-  values: [{ field: ["data", "published"], reverse: true }, { field: ["ref"] }]
-});
-```
-
-and a new function `papersByYear`, which paginates the papers of each year from the most recent to oldest one.
-
-```js
-Query(
-  Lambda(
-    ["year", "size", "after", "before"],
-    Let(
-      {
-        match: Match(Index("papersByYearAndPublished"), Var("year")),
-        page: If(
-          IsNull(Var("before")),
-          If(
-            IsNull(Var("after")),
-            Paginate(Var("match"), { size: Var("size") }),
-            Paginate(Var("match"), { after: Var("after"), size: Var("size") })
-          ),
-          Paginate(Var("match"), { before: Var("before"), size: Var("size") })
-        )
-      },
-      Map(Var("page"), Lambda(["date", "ref"], Get(Var("ref"))))
-    )
-  )
-);
-```
-
-Finally, to create a batch of `Paper`s, we define a function called `createPapersFromArray`
-
-```js
-Query(
-  Lambda(
-    ["array"],
-    Do(
-      Map(Var("array"), Lambda("elem", Do(Create(Collection("Paper"), { data: Var("elem") })))),
-      true
-    )
-  )
-);
-```
-
-Optionally, we may want to create a function to delete the stored `Papers`.
-
-```js
-Query(
-  Lambda(
-    "_",
-    Map(
-      Paginate(Documents(Collection("Paper")), { size: 9999 }),
-      Lambda(["ref"], Delete(Var("ref")))
-    )
-  )
-);
-```
-
-which we can call from the shell as `Call(Function("reset"))`.
-Notice that you amy need to call it a couple times if you have 10000 entries or more.
+The deployment of the site happens through a GitHub actions CI.
+There are the following action workflows: `publish.yml` publishes the site on each push to master, while `preview.yml` generates a preview build on each PR.
+There is also an `update.yml` which runs as a cron job to update the database on a monthly basis.
+The secrets `NETLIFY_SITE_ID`, `NETLIFY_AUTH_TOKEN` and `REDIS_URL` need to be uploaded so that the runners have access to them.
