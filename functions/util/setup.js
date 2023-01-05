@@ -24,6 +24,8 @@ export const setup = async () => {
 
   // Close connection to database
   await client.disconnect();
+
+  console.log("Done 🎉");
 };
 
-setup().then(() => console.log("Done 🎉"));
+await setup();
