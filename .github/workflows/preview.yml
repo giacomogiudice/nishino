@@ -24,6 +24,7 @@ jobs:
           npm run build
 
       - name: Deploy
+        if: github.actor != 'dependabot[bot]'
         id: deploy
         uses: netlify/actions/cli@master
         with:
@@ -35,6 +36,7 @@ jobs:
 
       - name: Comment
         uses: thollander/actions-comment-pull-request@v2
+        needs: deploy
         with:
           message: |
             This pull request has been deployed to Netlify.
