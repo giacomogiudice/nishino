@@ -24,6 +24,7 @@ jobs:
           npm run build
 
       - name: Deploy
+        if: github.actor != 'dependabot[bot]'
         id: deploy
         uses: netlify/actions/cli@master
         with:
