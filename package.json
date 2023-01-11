@@ -19,7 +19,7 @@
     "glob": "^8.0.3",
     "html-entities": "^2.3.3",
     "katex": "^0.16.0",
-    "netlify-cli": "^12.4.1",
+    "netlify-cli": "^12.7.0",
     "node-fetch": "^3.2.6",
     "svelte": "^3.48.0"
   },
