@@ -1,26 +1,16 @@
 module.exports = {
   root: true,
-  extends: ["eslint:recommended", "prettier"],
-  plugins: ["svelte3"],
-  overrides: [
-    {
-      files: ["*.svelte"],
-      processor: "svelte3/svelte3"
-    }
-  ],
+  extends: ['eslint:recommended', 'prettier', 'plugin:svelte/recommended'],
   rules: {
-    "no-useless-escape": "off"
-  },
-  settings: {
-    "svelte3/ignore-styles": () => true
+    'no-useless-escape': 'off',
+    'svelte/valid-compile': 'warn'
   },
   parserOptions: {
-    sourceType: "module",
-    ecmaVersion: 2022
+    sourceType: 'module'
   },
   env: {
     browser: true,
-    es6: true,
-    node: true
+    node: true,
+    es2022: true
   }
 };

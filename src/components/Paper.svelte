@@ -1,5 +1,5 @@
 <script>
-  import Latex from "./Latex.svelte";
+  import Latex from './Latex.svelte';
 
   export let id, title, authors, published, summary, url, pdf, categories, doi, journal_ref;
 </script>
@@ -8,9 +8,9 @@
   <summary>
     <section>
       <p class="title"><Latex text={title} /></p>
-      <p class="authors">{authors.join(", ")}</p>
+      <p class="authors">{authors.join(', ')}</p>
       <p class="info">
-        <a href={url}>{id}</a> | {new Date(published).toDateString()} | {categories.join(" ")} |
+        <a href={url}>{id}</a> | {new Date(published).toDateString()} | {categories.join(' ')} |
         <a href={pdf}>PDF</a>
       </p>
     </section>
@@ -26,8 +26,8 @@
 </details>
 
 <style lang="scss">
-  @import "../style/variables.scss";
-  @import "../style/layout.scss";
+  @import '../style/variables.scss';
+  @import '../style/layout.scss';
 
   details {
     border-bottom: 1px solid $color--background-highlight;

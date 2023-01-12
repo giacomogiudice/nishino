@@ -1,8 +1,8 @@
 <script>
-  import katex from "katex";
-  import "katex/dist/katex.css";
+  import katex from 'katex';
+  import 'katex/dist/katex.css';
 
-  export let text = "";
+  export let text = '';
 
   const options = {
     throwOnError: false
@@ -15,4 +15,5 @@
   $: rendered = render(text, options);
 </script>
 
+<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 {@html rendered}

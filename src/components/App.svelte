@@ -1,6 +1,6 @@
 <script>
-  import { onMount } from "svelte";
-  import PaperViewer from "./PaperViewer.svelte";
+  import { onMount } from 'svelte';
+  import PaperViewer from './PaperViewer.svelte';
 
   // Page state variables
   let year, papers;
@@ -51,7 +51,7 @@
 
   const handleSelect = (event) => {
     if (!event || !event.detail || !event.detail.value) {
-      console.warn("Unexpected event in handleSelect");
+      console.warn('Unexpected event in handleSelect');
       return;
     }
     // Skip if same year is selected

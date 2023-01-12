@@ -1,10 +1,10 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
 
   export let items = [];
   export let selected = undefined;
-  export let text = selected ? selected.label : "";
-  export let placeholder = "Search";
+  export let text = selected ? selected.label : '';
+  export let placeholder = 'Search';
   export let open = false;
 
   let input, list;
@@ -12,12 +12,12 @@
 
   const dispatch = createEventDispatcher();
 
-  $: filteredItems = text !== "" ? items.filter(({ label }) => label.includes(text)) : items;
+  $: filteredItems = text !== '' ? items.filter(({ label }) => label.includes(text)) : items;
 
   const expand = () => {
     open = true;
     input.focus();
-    text = "";
+    text = '';
   };
 
   const collapse = () => {
@@ -27,17 +27,17 @@
   };
 
   const handleClick = (event) => {
-    const attr = event.target.getAttribute("data-index");
-    !attr && console.warn("Target missing expected attribute during handleClick");
+    const attr = event.target.getAttribute('data-index');
+    !attr && console.warn('Target missing expected attribute during handleClick');
     const index = Number(attr);
     selected = items[index] || undefined;
-    dispatch("select", selected);
+    dispatch('select', selected);
     collapse();
   };
 
   const handleMouseEnter = (event) => {
-    const attr = event.target.getAttribute("data-index");
-    !attr && console.warn("Target missing expected attribute during handleMouseEnter");
+    const attr = event.target.getAttribute('data-index');
+    !attr && console.warn('Target missing expected attribute during handleMouseEnter');
     const index = Number(attr);
     highlighted = index || -1;
   };
@@ -46,7 +46,7 @@
     if (!open) return;
 
     switch (event.key) {
-      case "Enter":
+      case 'Enter':
         event.preventDefault();
         if (filteredItems.length === 1) {
           selected = filteredItems[0];
@@ -55,20 +55,20 @@
         } else {
           return;
         }
-        dispatch("select", selected);
+        dispatch('select', selected);
         collapse();
         break;
-      case "Escape":
+      case 'Escape':
         collapse();
         break;
-      case "ArrowDown":
+      case 'ArrowDown':
         event.preventDefault();
         if (highlighted < filteredItems.length - 1) {
           highlighted++;
           scrollDownTo(highlighted);
         }
         break;
-      case "ArrowUp":
+      case 'ArrowUp':
         event.preventDefault();
         if (highlighted > -1) {
           highlighted--;
@@ -79,14 +79,14 @@
   };
 
   const scrollDownTo = (index) => {
-    const item = list.querySelectorAll(".item")[index];
+    const item = list.querySelectorAll('.item')[index];
     if (!item) return;
     const offset = list.getBoundingClientRect().bottom - item.getBoundingClientRect().bottom;
     if (offset < 0) list.scrollTop -= offset;
   };
 
   const scrollUpTo = (index) => {
-    const item = list.querySelectorAll(".item")[index];
+    const item = list.querySelectorAll('.item')[index];
     if (!item) return;
     const offset = list.getBoundingClientRect().top - item.getBoundingClientRect().top;
     if (offset > 0) list.scrollTop -= offset;
@@ -125,7 +125,7 @@
 </search-bar>
 
 <style lang="scss">
-  @import "../style/variables.scss";
+  @import '../style/variables.scss';
 
   search-bar {
     position: relative;
@@ -192,7 +192,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    content: "";
+    content: '';
     cursor: default;
   }
 </style>

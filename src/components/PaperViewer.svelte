@@ -1,10 +1,10 @@
 <script>
-  import Fuse from "fuse.js";
-  import { range } from "$lib/array";
-  import VirtualList from "./VirtualList.svelte";
-  import SearchBar from "./SearchBar.svelte";
-  import Paper from "./Paper.svelte";
-  import Pinned from "./Pinned.svelte";
+  import Fuse from 'fuse.js';
+  import { range } from '$lib/array';
+  import VirtualList from './VirtualList.svelte';
+  import SearchBar from './SearchBar.svelte';
+  import Paper from './Paper.svelte';
+  import Pinned from './Pinned.svelte';
 
   const firstYear = 1994;
   const lastYear = new Date().getFullYear();
@@ -20,16 +20,16 @@
   export let loading = true;
 
   // Filtering functionality
-  let text = "";
+  let text = '';
 
   $: fuse = new Fuse(papers, {
-    keys: ["id", "title", "authors", "categories", "url", "pdf"],
+    keys: ['id', 'title', 'authors', 'categories', 'url', 'pdf'],
     shouldSort: false,
     threshold: 0.3,
     ignoreLocation: true
   });
 
-  $: filteredPapers = text !== "" ? fuse.search(text).map((obj) => obj["item"]) : papers;
+  $: filteredPapers = text !== '' ? fuse.search(text).map((obj) => obj['item']) : papers;
 </script>
 
 <Pinned let:hidden offset={10}>
@@ -59,8 +59,8 @@
 <div class="bottom-gap" />
 
 <style lang="scss">
-  @import "../style/variables.scss";
-  @import "../style/layout.scss";
+  @import '../style/variables.scss';
+  @import '../style/layout.scss';
 
   .bottom-gap {
     margin-bottom: $spacing--xl;

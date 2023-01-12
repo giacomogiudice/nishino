@@ -1,7 +1,7 @@
-import { createClient } from "redis";
-import * as quattro from "./quattro.js";
-import * as arxiv from "./arxiv.js";
-import { difference, union } from "../../lib/array.js";
+import { createClient } from 'redis';
+import * as quattro from './quattro.js';
+import * as arxiv from './arxiv.js';
+import { difference, union } from '../../lib/array.js';
 
 export const client = createClient({
   url: process.env.REDIS_URL
@@ -12,14 +12,14 @@ export const parser = (input, defaults) => {
   for (let key in defaults) {
     if (key in output) {
       switch (typeof defaults[key]) {
-        case "string":
+        case 'string':
           output[key] = String(output[key]);
           break;
-        case "number":
+        case 'number':
           output[key] = Number(output[key]);
           break;
-        case "boolean":
-          output[key] = output[key] === "true" || output[key] == true;
+        case 'boolean':
+          output[key] = output[key] === 'true' || output[key] == true;
           break;
       }
     } else {
@@ -35,9 +35,9 @@ export const ids = async (options) => {
 
   // Fetch papers
   tic = Date.now();
-  let storedIds = await client.zRangeByScore("index", year, year);
+  let storedIds = await client.zRangeByScore('index', year, year);
   toc = Date.now();
-  console.log(`Retrieved stored ids in ${toc - tic} ms,`, storedIds.length, "entries");
+  console.log(`Retrieved stored ids in ${toc - tic} ms,`, storedIds.length, 'entries');
 
   let remoteIds = [];
   let missingIds = [];
@@ -46,7 +46,7 @@ export const ids = async (options) => {
     tic = Date.now();
     remoteIds = await quattro.getIdsByYear(year);
     toc = Date.now();
-    console.log(`Scraped source in ${toc - tic} ms,`, remoteIds.length, "entries");
+    console.log(`Scraped source in ${toc - tic} ms,`, remoteIds.length, 'entries');
   }
 
   if (refresh) {
@@ -63,7 +63,7 @@ export const ids = async (options) => {
     const mask = await pipeline.exec();
     missingIds = missingIds.filter((item, i) => !mask[i]);
     toc = Date.now();
-    console.log(`Filtered missing entries in ${toc - tic} ms,`, missingIds.length, "entries");
+    console.log(`Filtered missing entries in ${toc - tic} ms,`, missingIds.length, 'entries');
   }
 
   if (missingIds.length) {
@@ -71,24 +71,24 @@ export const ids = async (options) => {
     tic = Date.now();
     const missing = await arxiv.getPapersByIds(missingIds);
     toc = Date.now();
-    console.log(`Retrieved data in ${toc - tic} ms,`, missingIds.length, "entries");
+    console.log(`Retrieved data in ${toc - tic} ms,`, missingIds.length, 'entries');
 
     // Add them to the database
     tic = Date.now();
     const pipeline = client.multi();
-    missing.forEach((entry) => pipeline.json.set(entry.id, "$", entry));
+    missing.forEach((entry) => pipeline.json.set(entry.id, '$', entry));
     const added = await pipeline.exec();
 
     const list = missing.map((entry) => {
       return { score: entry.year, value: entry.id };
     });
-    const indexed = await client.zAdd("index", list);
+    const indexed = await client.zAdd('index', list);
 
-    const complete = added.every((res) => res === "OK") && typeof indexed === "number";
+    const complete = added.every((res) => res === 'OK') && typeof indexed === 'number';
     toc = Date.now();
-    console.log(`Updated database in ${toc - tic} ms,`, indexed, "new entries");
+    console.log(`Updated database in ${toc - tic} ms,`, indexed, 'new entries');
     if (!complete) {
-      throw new Error("Failed to update database");
+      throw new Error('Failed to update database');
     }
 
     if (update) {
@@ -116,7 +116,7 @@ export const papers = async (options) => {
   storedIds.forEach((id) => pipeline.json.get(id));
   const stored = await pipeline.exec();
   toc = Date.now();
-  console.log(`Retrieved paper data in ${toc - tic} ms,`, stored.length, "papers");
+  console.log(`Retrieved paper data in ${toc - tic} ms,`, stored.length, 'papers');
 
   return stored;
 };

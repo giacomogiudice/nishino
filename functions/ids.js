@@ -1,4 +1,4 @@
-import { client, parser, ids } from "./util/queries.js";
+import { client, parser, ids } from './util/queries.js';
 
 export const handler = async (event) => {
   const currentYear = new Date().getFullYear();
@@ -16,14 +16,14 @@ export const handler = async (event) => {
     const data = await ids(params);
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data, null, 2)
     };
   } catch (err) {
     console.error(err);
     return {
       statusCode: 500,
-      body: "Sorry, an error occured."
+      body: 'Sorry, an error occured.'
     };
   } finally {
     // Close connection to database

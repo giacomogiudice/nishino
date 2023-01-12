@@ -1,15 +1,15 @@
-import path from "path";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import preprocess from "svelte-preprocess";
-import posthtml from "./plugins/vite-plugin-posthtml";
-import include from "posthtml-include";
-import autoprefixer from "autoprefixer";
+import path from 'path';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import preprocess from 'svelte-preprocess';
+import posthtml from './plugins/vite-plugin-posthtml';
+import include from 'posthtml-include';
+import autoprefixer from 'autoprefixer';
 
 export default {
-  publicDir: "static",
+  publicDir: 'static',
   build: {
     rollupOptions: {
-      input: ["index.html", "about/index.html"]
+      input: ['index.html', 'about/index.html']
     }
   },
   plugins: [
@@ -27,34 +27,34 @@ export default {
       },
       onwarn: (warning, handler) => {
         const { code } = warning;
-        if (code === "css-unused-selector") return;
+        if (code === 'css-unused-selector') return;
         handler(warning);
       }
     })
   ],
   resolve: {
     alias: {
-      "@": path.resolve("src"),
-      "$lib": path.resolve("lib")
+      '@': path.resolve('src'),
+      '$lib': path.resolve('lib')
     }
   },
-  rollupDedupe: ["svelte"],
+  rollupDedupe: ['svelte'],
   server: {
     port: 5173,
     proxy: {
-      "/api/query": {
-        target: "http://localhost:5173/",
-        rewrite: () => "mock/proxy.json"
+      '/api/papers': {
+        target: 'http://localhost:5173/',
+        rewrite: () => 'mock/proxy.json'
       }
     }
   }
 };
 
 const kebabCase = (str) => {
-  if (!str) return "";
+  if (!str) return '';
   const regex = /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g;
   return str
     .match(regex)
     .map((x) => x.toLowerCase())
-    .join("-");
+    .join('-');
 };

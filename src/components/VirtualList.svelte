@@ -1,6 +1,6 @@
 <!-- Adapting the code form @sveltejs/svelte-virtual-list, but using window as the parent element -->
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount, tick } from 'svelte';
 
   // props
   export let items;
@@ -106,7 +106,7 @@
 
   // Trigger initial refresh
   onMount(() => {
-    rows = content.getElementsByTagName("virtual-list-row");
+    rows = content.getElementsByTagName('virtual-list-row');
     mounted = true;
   });
 </script>

@@ -1,16 +1,16 @@
-import fetch from "node-fetch";
-import cheerio from "cheerio";
-import { chunk } from "../../lib/array.js";
-import { replaceLatexAccents } from "../../lib/string.js";
+import fetch from 'node-fetch';
+import cheerio from 'cheerio';
+import { chunk } from '../../lib/array.js';
+import { replaceLatexAccents } from '../../lib/string.js';
 
-const ARXIV_URL = "http://export.arxiv.org";
+const ARXIV_URL = 'http://export.arxiv.org';
 
 const ARXIV_BATCH_SIZE = 256;
 
 export const getPapersByIds = async (ids) => {
   // Batch the requests
   const promises = chunk(ids, ARXIV_BATCH_SIZE).map(async (batch) => {
-    const url = `${ARXIV_URL}/api/query?id_list=${batch.join(",")}&max_results=${ARXIV_BATCH_SIZE}`;
+    const url = `${ARXIV_URL}/api/query?id_list=${batch.join(',')}&max_results=${ARXIV_BATCH_SIZE}`;
 
     const response = await fetch(url);
     if (!response || !response.ok) {
@@ -30,27 +30,27 @@ const extractPapers = (body, ids) => {
 
   // Extract meaningful tags
   const $ = cheerio.load(body, { xmlMode: true });
-  const data = $("entry")
+  const data = $('entry')
     .map((ind, elem) => {
       const id = ids[ind];
-      const published = $(elem).children("published").text();
+      const published = $(elem).children('published').text();
       const year = new Date(published).getFullYear();
-      const title = $(elem).children("title").text().replace(whitespaces, " ").trim();
+      const title = $(elem).children('title').text().replace(whitespaces, ' ').trim();
       const authors = $(elem)
-        .children("author")
-        .map((_, author) => $(author).children("name").text())
+        .children('author')
+        .map((_, author) => $(author).children('name').text())
         .get();
       const summary = replaceLatexAccents(
-        $(elem).children("summary").text().replace(whitespaces, " ").trim()
+        $(elem).children('summary').text().replace(whitespaces, ' ').trim()
       );
       const categories = $(elem)
-        .children("category")
-        .map((_, cat) => $(cat).attr("term"))
+        .children('category')
+        .map((_, cat) => $(cat).attr('term'))
         .get();
-      const url = $(elem).children("id").text();
-      const pdf = $(elem).children("link[title=pdf]").attr("href");
-      const journal_ref = $(elem).children("arxiv\\:journal_ref").text();
-      const doi = $(elem).children("arxiv\\:doi").text();
+      const url = $(elem).children('id').text();
+      const pdf = $(elem).children('link[title=pdf]').attr('href');
+      const journal_ref = $(elem).children('arxiv\\:journal_ref').text();
+      const doi = $(elem).children('arxiv\\:doi').text();
 
       return {
         id,

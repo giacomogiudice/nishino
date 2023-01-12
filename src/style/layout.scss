@@ -1,4 +1,4 @@
-@import "./variables.scss";
+@import './variables.scss';
 
 /* Start with a couple resets */
 
@@ -111,7 +111,7 @@ a {
   }
 }
 
-a[role="button"] {
+a[role='button'] {
   display: inline-block;
   padding: $spacing--xxs $spacing--sm;
   margin: $spacing--sm;
