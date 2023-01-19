@@ -23,13 +23,19 @@
   let text = '';
 
   $: fuse = new Fuse(papers, {
-    keys: ['id', 'title', 'authors', 'categories', 'url', 'pdf'],
-    shouldSort: false,
+    keys: ['id', 'title', 'authors', 'categories'],
+    shouldSort: true,
     threshold: 0.3,
     ignoreLocation: true
   });
 
-  $: filteredPapers = text !== '' ? fuse.search(text).map((obj) => obj['item']) : papers;
+  // Compares papers by `published` field
+  const byPublished = (a, b) => {
+    return b['published'] > a['published'] ? 1 : -1;
+  };
+
+  $: filteredPapers =
+    text == '' ? papers.sort(byPublished) : fuse.search(text).map((obj) => obj['item']);
 </script>
 
 <Pinned let:hidden offset={10}>
