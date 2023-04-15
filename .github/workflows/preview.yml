@@ -37,6 +37,7 @@ jobs:
           MESSAGE: "${{ github.ref_name }}@${{ github.sha }}"
 
       - name: Comment
+        if: steps.deploy.outcome == 'success'
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
