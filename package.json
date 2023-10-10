@@ -26,7 +26,7 @@
     "html-entities": "^2.3.3",
     "katex": "^0.16.8",
     "node-fetch": "^3.2.6",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.31",
     "posthtml": "^0.16.6",
     "posthtml-include": "^1.7.4",
     "prettier": "^2.8.7",
