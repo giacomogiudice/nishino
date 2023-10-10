@@ -25,7 +25,7 @@
     "glob": "^9.3.2",
     "html-entities": "^2.3.3",
     "katex": "^0.16.8",
-    "node-fetch": "^3.2.6",
+    "node-fetch": "^3.3.2",
     "postcss": "^8.4.31",
     "posthtml": "^0.16.6",
     "posthtml-include": "^1.7.4",
