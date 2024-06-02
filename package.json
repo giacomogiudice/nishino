@@ -20,7 +20,7 @@
     "cheerio": "^1.0.0-rc.12",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-svelte": "^2.32.4",
+    "eslint-plugin-svelte": "^2.35.1",
     "fuse.js": "^6.6.2",
     "glob": "^10.3.10",
     "html-entities": "^2.3.3",
