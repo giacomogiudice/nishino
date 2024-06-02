@@ -24,7 +24,7 @@
     "fuse.js": "^6.6.2",
     "glob": "^10.3.10",
     "html-entities": "^2.3.3",
-    "katex": "^0.16.9",
+    "katex": "^0.16.10",
     "node-fetch": "^3.3.2",
     "postcss": "^8.4.31",
     "posthtml": "^0.16.6",
