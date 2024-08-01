@@ -29,7 +29,7 @@
     "postcss": "^8.4.31",
     "posthtml": "^0.16.6",
     "posthtml-include": "^1.7.4",
-    "prettier": "^2.8.7",
+    "prettier": "^3.3.3",
     "prettier-plugin-svelte": "^2.10.1",
     "redis": "^4.6.13",
     "sass": "^1.69.5",
