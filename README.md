@@ -111,6 +111,7 @@ REDIS_URL=redis://<user>:<password>@<hostname>:<port>
 ```
 
 and add it to the Netlify environment with `netlify env:import .env` or import it manually with `netlify env:set REDIS_URL <value>`.
+You can as well load it with `source .env` before running `npm run db-update`.
 
 If you have the tool `redis-cli`, you can interactively log into the database from your terminal
 
