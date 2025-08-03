@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: 24
 
+      - name: Install Netlify
+        run: npm install -g netlify-cli
+
       - name: Build
         run: |
           npm install
@@ -28,9 +31,12 @@ jobs:
       - name: Deploy
         if: github.actor != 'dependabot[bot]'
         id: deploy
-        uses: netlify/actions/cli@master
-        with:
-          args: deploy --message="$MESSAGE"
+        run: |
+          netlify deploy \
+            --message "$MESSAGE" \
+            --dir dist \
+            --site "$NETLIFY_SITE_ID" \
+            --auth "$NETLIFY_AUTH_TOKEN"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
