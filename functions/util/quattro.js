@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 
 const QUATTRO_URL = 'http://quattro.phys.sci.kobe-u.ac.jp';
 

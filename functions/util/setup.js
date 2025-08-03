@@ -2,6 +2,10 @@ import { client, ids } from './queries.js';
 import { range } from '../../lib/array.js';
 
 export const setup = async () => {
+  client.on('error', function (err) {
+    throw err;
+  });
+
   // Open connection to database
   await client.connect();
 

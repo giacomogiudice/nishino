@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { chunk } from '../../lib/array.js';
 import { replaceLatexAccents } from '../../lib/string.js';
 
