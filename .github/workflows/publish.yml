@@ -18,7 +18,7 @@ jobs:
           node-version: 24
 
       - name: Install Netlify
-          run: npm install -g netlify-cli
+        run: npm install -g netlify-cli
 
       - name: Build
         run: |
