@@ -95,7 +95,7 @@
 
 <search-bar>
   {#if open}
-    <div class="shadow" on:click={collapse} />
+    <div class="shadow" on:click={collapse}></div>
   {/if}
   <input
     type="text"
@@ -107,7 +107,7 @@
     on:focus={expand} />
   <search-bar-list class:open bind:this={list}>
     <ul>
-      {#each filteredItems as { value, label }, ind}
+      {#each filteredItems as { value, label }, ind (label)}
         <li
           class="item"
           class:selected={selected ? selected.value === value : false}
@@ -125,7 +125,7 @@
 </search-bar>
 
 <style lang="scss">
-  @import '../style/variables.scss';
+  @use '../style/variables' as *;
 
   search-bar {
     position: relative;

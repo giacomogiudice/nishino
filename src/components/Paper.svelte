@@ -26,8 +26,7 @@
 </details>
 
 <style lang="scss">
-  @import '../style/variables.scss';
-  @import '../style/layout.scss';
+  @use '../style/variables.scss' as *;
 
   details {
     border-bottom: 1px solid $color--background-highlight;

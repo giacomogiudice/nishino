@@ -51,7 +51,7 @@
 </Pinned>
 {#if loading}
   <div class="container announcer flex-even">
-    <object type="image/svg+xml" data="/loading.svg" name="loading" aria-label="loading" />
+    <object type="image/svg+xml" data="/loading.svg" name="loading" aria-label="loading"></object>
   </div>
 {:else if filteredPapers.length}
   <VirtualList items={filteredPapers} let:item={paper} threshold={600}>
@@ -62,11 +62,11 @@
     <h2>No papers available</h2>
   </div>
 {/if}
-<div class="bottom-gap" />
+<div class="bottom-gap"></div>
 
 <style lang="scss">
-  @import '../style/variables.scss';
-  @import '../style/layout.scss';
+  @use "sass:color";
+  @use '../style/variables.scss' as *;
 
   .bottom-gap {
     margin-bottom: $spacing--xl;
@@ -77,7 +77,7 @@
     top: 0;
     z-index: 1;
     width: 100%;
-    background-color: transparentize($color--background, 0.1);
+    background-color: color.adjust($color--background, $alpha: -0.1);
     transition: all $transition-time--md ease-in-out;
 
     &.hidden {

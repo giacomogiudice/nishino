@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <include src="src/includes/meta.html">{"title": "Home"}</include>
@@ -6,11 +6,10 @@
       import '@/style/variables.scss';
       import '@/style/layout.scss';
 
+      import { mount } from 'svelte';
       import App from '@/components/App.svelte';
 
-      const app = new App({
-        target: document.querySelector('#app')
-      });
+      const app = mount(App, { target: document.querySelector('#app') });
     </script>
   </head>
   <body class="flex-col">
