@@ -73,7 +73,14 @@ Here is a list of improvements
 
 ### Frontend
 
-Once you have cloned the package, you can work on it locally and see the results with
+Once you have cloned the package, you first want to install the dependencies with
+
+```bash
+npm install
+```
+
+To update packages to the latest non-major version, use `npm upgrade --save`.
+You can then work on it locally and see the results with
 
 ```bash
 npm run dev
@@ -93,23 +100,17 @@ You can find the output in the `dist/` folder.
 
 ### Database setup
 
-First create a database on [Redis Labs](https://app.redislabs.com/) or any Redis provider.
+First create a database on [Redis Labs](https://app.redislabs.com/) or any Redis provider (currently using [Upstash](https://upstash.com/)).
 You can also host your own by installing `redis-server` and `redis-cli` or using the [docker image](https://redis.io/docs/stack/get-started/install/docker/).
 It must have the **RedisJSON** module available and activated.
-Since the Netlify functions are hosted at `us-east-1`, it makes sense to choose that as a location.
+Since the Netlify functions are hosted at `us-east-1`, it makes sense to choose somewhere near that as a location.
 To develop locally, you can create a `.env` file on the root folder, with the following variable
 
 ```
 REDIS_URL=redis://<user>:<password>@<hostname>:<port>
 ```
 
-and add it to the Netlify environment with
-
-```
-netlify env:import .env
-```
-
-Alternatively you can manually import it with `netlify env:set REDIS_URL <value>`.
+and add it to the Netlify environment with `netlify env:import .env` or import it manually with `netlify env:set REDIS_URL <value>`.
 
 If you have the tool `redis-cli`, you can interactively log into the database from your terminal
 
@@ -123,6 +124,11 @@ This can be useful, for example to empty the database.
 ### Backend
 
 To actually run the Lambda functions and test with the real dataset, you need to have the [Netlify CLI](https://docs.netlify.com/cli/get-started/) installed.
+
+```bash
+npm install -g netlify-cli
+```
+
 Once you have it, you can develop locally with
 
 ```bash
