@@ -31,7 +31,7 @@
     "posthtml-include": "^2.0.1",
     "prettier": "^3.6.2",
     "prettier-plugin-svelte": "^3.4.0",
-    "redis": "^5.7.0",
+    "redis": "^5.8.2",
     "sass": "^1.90.0",
     "svelte": "^5.37.3",
     "svelte-preprocess": "^6.0.3",
