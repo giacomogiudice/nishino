@@ -22,7 +22,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-svelte": "^3.11.0",
     "fuse.js": "^6.6.2",
-    "glob": "^11.0.3",
+    "glob": "^11.1.0",
     "html-entities": "^2.6.0",
     "katex": "^0.16.22",
     "node-fetch": "^3.3.2",
